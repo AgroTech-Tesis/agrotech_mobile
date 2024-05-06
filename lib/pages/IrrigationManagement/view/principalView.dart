@@ -1,3 +1,5 @@
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/plostView.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -351,27 +353,32 @@ class _SignInState extends State<Principalview> {
                   color: Color(0xFF297739), // Color de fondo del contenedor
                   borderRadius: BorderRadius.circular(8), // Borde redondeado
                 ),
-                child: Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(
-                            Icons.menu,
-                            color: Colors.white,
-                            size: 23,
-                          )),
-                      Text(
-                        "Inicio",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: Colors.white, // Color/Light/Body Text
+                child: MaterialButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(
+                              Icons.menu,
+                              color: Colors.white,
+                              size: 23,
+                            )),
+                        Text(
+                          "Inicio",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: Colors.white, // Color/Light/Body Text
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -383,26 +390,49 @@ class _SignInState extends State<Principalview> {
                   color: Color(0xFFFAFAFA), // Color de fondo del contenedor
                   borderRadius: BorderRadius.circular(8), // Borde redondeado
                 ),
-                child: Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(
-                            Icons.menu,
-                            size: 23,
-                          )),
-                      Text(
-                        "Parcelas",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                          color: Color(0xFF535763), // Color/Light/Body Text
-                        ),
+                child: MaterialButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            PlostView(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(-1.0, 0.0);
+                          const end = Offset.zero;
+                          final tween = Tween(begin: begin, end: end);
+                          final offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
                       ),
-                    ],
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(
+                              Icons.menu,
+                              size: 23,
+                            )),
+                        Text(
+                          "Parcelas",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                            color: Color(0xFF535763), // Color/Light/Body Text
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -414,26 +444,34 @@ class _SignInState extends State<Principalview> {
                   color: Color(0xFFFAFAFA), // Color de fondo del contenedor
                   borderRadius: BorderRadius.circular(8), // Borde redondeado
                 ),
-                child: Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(
-                            Icons.menu,
-                            size: 23,
-                          )),
-                      Text(
-                        "Cerrar Sesión",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                          color: Color(0xFF535763), // Color/Light/Body Text
+                child: MaterialButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignIn()),
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(
+                              Icons.menu,
+                              size: 23,
+                            )),
+                        Text(
+                          "Cerrar Sesión",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                            color: Color(0xFF535763), // Color/Light/Body Text
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               )

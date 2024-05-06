@@ -1,3 +1,4 @@
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/principalView.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -95,16 +96,17 @@ class _SignInState extends State<SignIn> {
                 Container(
                     child: TextButton(
                   onPressed: () {
-                    // Acción que se ejecutará al presionar el botón
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Principalview()),
+                    );
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
-                      Color(
-                          0xFF297739), // Color de fondo del botón en hexadecimal
+                      Color(0xFF297739),
                     ),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      Size(double.infinity,
-                          60), // Ancho máximo y altura del botón
+                      Size(double.infinity, 60),
                     ),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(

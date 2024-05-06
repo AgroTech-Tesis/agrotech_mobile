@@ -1,3 +1,5 @@
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/principalView.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -173,18 +175,14 @@ class _PlostViewState extends State<PlostView> {
                                   SizedBox(height: 30),
                                   MaterialButton(
                                     onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Cerrar el diálogo
+                                      Navigator.of(context).pop();
                                     },
-                                    color: Color(
-                                        0xFF297739), // Color de fondo del botón
-                                    textColor: Colors
-                                        .white, // Color del texto del botón
+                                    color: Color(0xFF297739),
+                                    textColor: Colors.white,
                                     child: Text('Cerrar'),
                                     height: 45, // Altura del botón
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          6), // Borde del botón
+                                      borderRadius: BorderRadius.circular(6),
                                     ),
                                   ),
                                 ],
@@ -280,26 +278,49 @@ class _PlostViewState extends State<PlostView> {
                 color: Color(0xFFFAFAFA), // Color de fondo del contenedor
                 borderRadius: BorderRadius.circular(8), // Borde redondeado
               ),
-              child: Padding(
-                padding: EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Icon(
-                          Icons.home,
-                          size: 23,
-                        )),
-                    Text(
-                      "Inicio",
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        color: Color(0xFF535763), // Color/Light/Body Text
-                      ),
+              child: MaterialButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          Principalview(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(1.0, 0.0);
+                        const end = Offset.zero;
+                        final tween = Tween(begin: begin, end: end);
+                        final offsetAnimation = animation.drive(tween);
+
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        );
+                      },
                     ),
-                  ],
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: Icon(
+                            Icons.home,
+                            size: 23,
+                          )),
+                      Text(
+                        "Inicio",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Color(0xFF535763), // Color/Light/Body Text
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -311,29 +332,33 @@ class _PlostViewState extends State<PlostView> {
                 color: Color(0xFF297739), // Color de fondo del contenedor
                 borderRadius: BorderRadius.circular(8), // Borde redondeado
               ),
-              child: Padding(
-                padding: EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Icon(
-                          Icons.menu,
-                          size: 23,
-                          color: Colors.white,
-                        )),
-                    Text(
-                      "Parcelas",
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                        color: Colors.white, // Color/Light/Body Text
-                      ),
+              child: MaterialButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(
+                              Icons.menu,
+                              size: 23,
+                              color: Colors.white,
+                            )),
+                        Text(
+                          "Parcelas",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                            color: Colors.white, // Color/Light/Body Text
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  )),
             ),
             Container(
               margin: EdgeInsets.only(left: 15, right: 15, bottom: 10),
@@ -343,26 +368,34 @@ class _PlostViewState extends State<PlostView> {
                 color: Color(0xFFFAFAFA), // Color de fondo del contenedor
                 borderRadius: BorderRadius.circular(8), // Borde redondeado
               ),
-              child: Padding(
-                padding: EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Icon(
-                          Icons.menu,
-                          size: 23,
-                        )),
-                    Text(
-                      "Cerrar Sesión",
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                        color: Color(0xFF535763), // Color/Light/Body Text
+              child: MaterialButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignIn()),
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: Icon(
+                            Icons.menu,
+                            size: 23,
+                          )),
+                      Text(
+                        "Cerrar Sesión",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                          color: Color(0xFF535763), // Color/Light/Body Text
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             )
