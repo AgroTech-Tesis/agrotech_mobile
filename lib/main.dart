@@ -1,5 +1,6 @@
-import 'package:agrotech/pages/IdentityAndAccessManagement/view/signIn.dart';
-import 'package:agrotech/pages/IrrigationManagement/view/principalView.dart';
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/plostView.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/principalView.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext contex) {
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -26,18 +27,11 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
