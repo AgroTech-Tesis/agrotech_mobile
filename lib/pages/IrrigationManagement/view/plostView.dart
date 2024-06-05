@@ -1,4 +1,9 @@
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/model/sensorDataRecord.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/model/zone.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/model/zoneDetail.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/services/sensorDataRecord.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/services/zoneService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/principalView.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,16 +16,55 @@ class PlostView extends StatefulWidget {
 }
 
 class _PlostViewState extends State<PlostView> {
-  List<String> plosts = [
-    "Parcela 1",
-    "Parcela 2",
-    "Parcela 3",
-    "Parcela 4",
-    "Parcela 5",
-    "Parcela 6",
-    "Parcela 7",
-    "Parcela 8"
-  ];
+  List<Zone>? plosts;
+  List<SensorDataRecord>? sensorDataRecords;
+  List<String> typeSensorData = ['SENSOR DE CAUDAL', 'SENSOR DE HUMEDAD', 'SENSOR DE TEMPERATURA'];
+  Map<String, dynamic> queryParams = {
+    'zoneId': '',
+  };
+  ZoneDetail zoneDetail = ZoneDetail();
+  ZoneService? zoneService;
+  SensordatarecordService sensorDataRecordSenvice = SensordatarecordService();
+
+  @override
+  void initState() {
+    zoneService = ZoneService();
+    getAllZone();
+    //getSensorDataRecord();
+    super.initState();
+  }
+
+  Future getAllZone() async {
+    plosts = await zoneService?.getAllZone();
+    setState(() {
+      plosts = plosts;
+    });
+    print(sensorDataRecords);
+  }
+  
+  void getSensorDataRecord(String zoneId) async {
+    var roomTemperature = 0;
+    var roomHumidity = 0;
+    var waterConsumption = 0;
+    queryParams['zoneId'] = zoneId;
+    sensorDataRecords = await sensorDataRecordSenvice.getAllSensorDataRecord(params: queryParams);
+    setState(() {
+      sensorDataRecords = sensorDataRecords;
+    });
+    sensorDataRecords?.forEach((element) {
+      if(element.typeSensor == typeSensorData[0])
+        roomTemperature += element.lastValue!.toInt();
+      if(element.typeSensor == typeSensorData[1])
+        roomHumidity += element.lastValue!.toInt();
+      if(element.typeSensor == typeSensorData[2])
+        waterConsumption += element.lastValue!.toInt();
+    });
+    zoneDetail = ZoneDetail(
+      naHumidityOfFloor: roomHumidity.toString(),
+      roomTemperature: roomTemperature.toString(),
+      waterConsumption: waterConsumption.toString(),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +118,7 @@ class _PlostViewState extends State<PlostView> {
               margin: const EdgeInsets.all(10),
               child: GridView.builder(
                 shrinkWrap: true,
-                itemCount: 8,
+                itemCount: plosts?.length ?? 0,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 10.0,
@@ -153,20 +197,6 @@ class _PlostViewState extends State<PlostView> {
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
-                                        '60%',
-                                        style: GoogleFonts.rubik(fontSize: 13),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Consumo de agua: ',
-                                        style: GoogleFonts.rubik(fontSize: 13),
-                                      ),
-                                      Text(
                                         '10000 m³%',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       )
@@ -199,7 +229,7 @@ class _PlostViewState extends State<PlostView> {
                           'assets/parcela$imageIndex.png',
                           height: 130,
                         ),
-                        Text(plosts[index]),
+                        Text(plosts![index].name!),
                       ],
                     )),
                   );

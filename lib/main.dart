@@ -1,6 +1,4 @@
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
-import 'package:agrotech_mobile/pages/IrrigationManagement/view/plostView.dart';
-import 'package:agrotech_mobile/pages/IrrigationManagement/view/principalView.dart';
 import 'package:flutter/material.dart';
 
 void main() {
