@@ -2,6 +2,8 @@ import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.da
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/plostView.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/services/weatherForecast.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/model/weatherForecast.dart';
 
 class Principalview extends StatefulWidget {
   const Principalview({Key? key}) : super(key: key);
@@ -11,6 +13,13 @@ class Principalview extends StatefulWidget {
 }
 
 class _SignInState extends State<Principalview> {
+  late Future<WeatherForecast> futureWeather;
+
+  @override
+  void initState() {
+    super.initState();
+    futureWeather = WeatherForecastService().getWeatherData('tumbes');
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,15 +105,29 @@ class _SignInState extends State<Principalview> {
                           ),
                         ),
                         SizedBox(height: 8),
-                        Text(
-                          '30°',
-                          style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                              fontSize: 55,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
+                        FutureBuilder<WeatherForecast>(
+                          future: futureWeather,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              final weather = snapshot.data!;
+                              return Text(
+                                '${weather.tempCelcius}°C',
+                                style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                    fontSize: 55,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Text('No data');
+                            }
+                          },
                         ),
                       ],
                     ),
