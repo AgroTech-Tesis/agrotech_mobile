@@ -1,3 +1,8 @@
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/account.dart';
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/farmer.dart';
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/signIn.dart';
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/services/FarmerService.dart';
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/services/SignInService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/principalView.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +15,38 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  SignInModel? signInModel;
+  Account? account;
+  Farmer? farmer;
+  HttpSignInService? signInService;
+  FarmerService? farmerService;
+  TextEditingController emailAddress = TextEditingController();
+  TextEditingController password = TextEditingController();
+  @override
+  void initState() {
+    signInService = HttpSignInService();
+    farmerService = FarmerService();
+    super.initState();
+  }
+  Future signInServiceAccount() async{
+    signInModel = SignInModel(emailAddress: emailAddress.text, password: password.text);
+    account = await signInService?.signIn(signInModel!);
+    setState(() {
+      account = account;
+      if(account != null){
+        getFarmer(account!);
+      }
+    });
+  }
+  Future getFarmer(Account account) async{
+    farmer = await farmerService!.getFarmerByAccountId(account.id!);
+    setState(() {
+      farmer = farmer;
+      if(farmer != null){
+        Navigator.push(context,MaterialPageRoute(builder: (context) => Principalview(farmer!, account!)),);
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +88,7 @@ class _SignInState extends State<SignIn> {
                 Container(
                   margin: EdgeInsets.only(bottom: 15),
                   child: TextField(
+                    controller: emailAddress,
                     decoration: InputDecoration(
                       labelText: 'Correo Electrónico',
                       labelStyle: TextStyle(
@@ -67,6 +105,7 @@ class _SignInState extends State<SignIn> {
                 Container(
                   margin: EdgeInsets.only(bottom: 15),
                   child: TextField(
+                    controller: password,
                     decoration: InputDecoration(
                       labelText: 'Contraseña',
                       labelStyle: TextStyle(
@@ -96,10 +135,7 @@ class _SignInState extends State<SignIn> {
                 Container(
                     child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Principalview()),
-                    );
+                    signInServiceAccount();
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(

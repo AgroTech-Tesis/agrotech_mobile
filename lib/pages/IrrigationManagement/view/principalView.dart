@@ -1,4 +1,11 @@
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/account.dart';
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/farmer.dart';
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/model/irrigation.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/model/riceCrop.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/services/deviceService.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/services/irrigationService.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/services/riceCropService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/plostView.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,23 +13,200 @@ import 'package:agrotech_mobile/pages/IrrigationManagement/services/weatherForec
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/weatherForecast.dart';
 
 class Principalview extends StatefulWidget {
-  const Principalview({Key? key}) : super(key: key);
+  Farmer farmer;
+  Account account;
+  Principalview(this.farmer, this.account, {super.key});
 
   @override
-  _SignInState createState() => _SignInState();
+  _PrincipalviewState createState() => _PrincipalviewState();
 }
 
-class _SignInState extends State<Principalview> {
+class _PrincipalviewState extends State<Principalview> {
+  bool _isSwitched = false;
+  RiceCrop? riceCrop;
+  IrrigationService? irrigationService;
+  Ricecropservice? ricecropservice;
+  Irrigation? irrigations;
+  Deviceservice? deviceservice;
+  int daysPreviousIrrigation = 0;
+  TextEditingController nameNewRiceCrop = TextEditingController();
   late Future<WeatherForecast> futureWeather;
-
   @override
   void initState() {
-    super.initState();
+    ricecropservice = Ricecropservice();
+    irrigationService = IrrigationService();
+    deviceservice = Deviceservice();
+    getRiceCropById(widget.farmer.id!);
+    
     futureWeather = WeatherForecastService().getWeatherData('tumbes');
+    super.initState();
   }
+
+  Future getRiceCropById(int farmerId) async {
+    riceCrop = await ricecropservice!.getRiceCropById(farmerId);
+    setState(() {
+      riceCrop = riceCrop;
+      if(riceCrop != null){
+        getIrrigation(riceCrop!.id!);
+      }
+    });
+  }
+  Future deviceIotRiceCrop(int riceCropId) async {
+    var response = await deviceservice!.deviceIotRiceCrop(riceCropId);
+    if(response != null){
+      print(response);
+    }
+  }
+  Future updateIrrigation() async {
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(irrigations!.createdAt!);
+    irrigations?.daysPreviousIrrigation = difference.inDays;
+    if(_isSwitched)
+      irrigations?.status = 'ACTIVE';
+    else
+      irrigations?.status = 'INACTIVE';
+    irrigations = await irrigationService!.updateIrrigation(irrigations!);
+    setState(() {
+      irrigations = irrigations;
+      _isSwitched = !_isSwitched;
+    });
+  }
+  Future createIrrigation() async {
+    Irrigation irrigation = Irrigation(
+      riceCropId: riceCrop!.id,
+    );
+    irrigation = (await irrigationService!.createIrrigation(irrigation))!;
+    setState(() {
+      irrigation = irrigation;
+    });
+  }
+  Future getIrrigation(int riceCropId) async {
+    irrigations = await irrigationService!.getIrrigations(riceCropId);
+    setState(() {
+      irrigations = irrigations;
+      daysPreviousIrrigation = irrigations != null ? irrigations!.daysPreviousIrrigation! : 0;
+    });
+  }
+  Future createRiceCrop() async {
+    riceCrop = RiceCrop(
+      farmerId: widget.farmer.id,
+      name: nameNewRiceCrop.text, //nameNewRiceCrop.text
+      status: 'ACTIVE',
+    );
+    riceCrop = await ricecropservice!.createRiceCrop(riceCrop!);
+    setState(() {
+      riceCrop = riceCrop;
+      if(riceCrop != null){
+        getIrrigation(riceCrop!.id!);
+        deviceIotRiceCrop(riceCrop!.id!);
+      }
+    });
+  }
+  void _toggleSwitch() {
+    _showDialog();
+  }
+  void _showDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // Permite cerrar el diálogo al tocar fuera de él
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          child: Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(padding: EdgeInsets.only(top: 20, bottom: 20),
+                child: Image.asset(
+                  'assets/cosecha.png',
+                  width: 100,
+                  height: 100,
+                )),
+
+                Padding(padding: EdgeInsets.only(top: 20, bottom: 20),
+                child: Text(!_isSwitched ?
+                  "¿Desea activar el riego?" : "¿Desea desactivar el riego? Recuerde que este proceso es de forma automática",
+                  style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87
+                              ),
+                  textAlign: TextAlign.center,
+                )),
+                Padding(padding: EdgeInsets.only(top: 20, bottom: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          if(_isSwitched){
+                            createIrrigation();
+                          }else{
+                            updateIrrigation();
+                          }
+                        });
+                        Navigator.of(context).pop(); // Cerrar el diálogo
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Color(
+                              0xFF297739,), // Color de fondo del botón en hexadecimal
+                        ),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(8), // Bordes redondeados
+                          ),
+                        ),
+                      ),
+                      child: Text("Aceptar", style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w300
+                                      )),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Cerrar el diálogo
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Color(
+                              0xFF297739,), // Color de fondo del botón en hexadecimal
+                        ),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(8), // Bordes redondeados
+                          ),
+                        ),
+                      ),
+                      child: Text("Cancelar", style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w300
+                                      )),
+                    ),
+                  ],
+                ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return riceCrop != null ? Scaffold(
         backgroundColor: Colors.white,
         body: Center(
           child: ListView(
@@ -145,7 +329,7 @@ class _SignInState extends State<Principalview> {
                       top: 10, bottom: 10, left: 25, right: 25),
                   child: Center(
                     child: Text(
-                      'RIEGO 2',
+                      'RIEGO  $daysPreviousIrrigation',
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
                           fontSize: 30,
@@ -177,39 +361,48 @@ class _SignInState extends State<Principalview> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
+                        GestureDetector(
+                          onTap: _toggleSwitch,
+                          child: Container(
                             width: 48,
                             height: 24,
                             child: Stack(
                               children: [
-                                Positioned(
-                                  height: 24,
-                                  left: 0,
-                                  right: 0,
-                                  top: 0,
-                                  child: Container(
+                                AnimatedPositioned(
+                                  duration: Duration(milliseconds: 250),
+                                  child: Positioned(
+                                    height: 24,
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    child: Container(
                                     decoration: BoxDecoration(
-                                      color: Color(
-                                          0xFF297739), // Cambia el color según tus necesidades
+                                      color: _isSwitched ? Color(0xFF297739) : Color(0xFF6E6E6E),
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                   ),
+                                  )
                                 ),
-                                Positioned(
-                                  width: 20,
-                                  height: 20,
-                                  right: 2,
-                                  top: 2,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors
-                                          .white, // Cambia el color según tus necesidades
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
+                                AnimatedPositioned(
+                                  duration: Duration(milliseconds: 250),
+                                  child: Positioned(
+                                    width: 20,
+                                    height: 20,
+                                    top: _isSwitched ? 2 : 2,
+                                    left: _isSwitched ? 2: 26,
+                                    child: Container(
+                                      width: 20,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                  ))
                                 ),
                               ],
-                            )),
+                            ),
+                          ),
+                        ),
                         SizedBox(width: 10),
                         Text(
                           'Activar Riego',
@@ -347,7 +540,7 @@ class _SignInState extends State<Principalview> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Diego Porta Ñaña',
+                          widget.farmer.name!,
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
@@ -355,7 +548,7 @@ class _SignInState extends State<Principalview> {
                           ),
                         ),
                         Text(
-                          'ashfaksayem@gmail.com',
+                          widget.account.emailAddress!,
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
                             fontSize: 10,
@@ -419,7 +612,7 @@ class _SignInState extends State<Principalview> {
                       context,
                       PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) =>
-                            PlostView(),
+                            PlostView(widget.farmer, widget.account),
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
                           const begin = Offset(-1.0, 0.0);
@@ -500,6 +693,214 @@ class _SignInState extends State<Principalview> {
               )
             ],
           ),
-        ));
+        )):
+        Scaffold(
+        backgroundColor: Colors.white,
+          body: Center(
+            child: ListView(
+              children: [
+                Container(
+                margin: const EdgeInsets.only(
+                    top: 10, bottom: 10, left: 25, right: 25),
+                child: Row(
+                  children: [
+                    Builder(builder: (
+                      BuildContext context) {
+                        return IconButton(
+                          icon: Icon(Icons.menu),
+                          onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                          color: Colors.white,
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Color(0xFF297739)),
+                            shape:
+                                MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    5.0), // Ajusta este valor según tu preferencia
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Bienvenidos',
+                              style: GoogleFonts.poppins(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 50, bottom: 25),
+                  height: 200,
+                  child: Image.asset('assets/logo.png'),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 25, top: 25),
+                  child: Center(
+                    child: Text(
+                      'No tienes cultivos activos',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20, // Tamaño de fuente más grande
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 40,
+                  margin: const EdgeInsets.only(
+                      top: 25, bottom: 10, left: 25, right: 25),
+                    child: TextButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible:
+                          true, // Permite cerrar el diálogo al tocar fuera de él
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 0,
+                          backgroundColor: Colors.white,
+                          child: Container(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(padding: EdgeInsets.only(top: 20, bottom: 20),
+                                child: Image.asset(
+                                  'assets/agricultor.png',
+                                  width: 100,
+                                  height: 100,
+                                )),
+                                Padding(padding: EdgeInsets.only(top: 20, bottom: 20),
+                                  child: Text(
+                                    "¿Desea crear un nuevo cultivo activo para gestionar su riego?",
+                                    style: TextStyle(fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                TextField(
+                                  controller: nameNewRiceCrop,
+                                  decoration: InputDecoration(
+                                    labelText: 'Ingrese el nombre del cultivo',
+                                    labelStyle: TextStyle(color: Colors.grey),
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: BorderSide(color: Colors.green, width: 2.0),
+                                    ),
+                                    prefixIcon: Icon(Icons.text_fields, color: Colors.green),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(Icons.clear, color: Colors.red),
+                                      onPressed: () {
+                                        // Acción para limpiar el texto
+                                      },
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                                  child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        createRiceCrop();
+                                        Navigator.of(context).pop(); // Cerrar el diálogo
+                                      },
+                                      style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<Color>(
+                                          Color(
+                                              0xFF297739), // Color de fondo del botón en hexadecimal
+                                        ),
+                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8), // Bordes redondeados
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text("Aceptar", style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.white,
+                                      )),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // Cerrar el diálogo
+                                      },
+                                      style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<Color>(
+                                          Color(
+                                              0xFF297739), // Color de fondo del botón en hexadecimal
+                                        ),
+                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8), // Bordes redondeados
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text("Cancelar", style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.white,
+                                      )),
+                                    ),
+                                  ],
+                                ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      Color(0xFF297739),
+                    ),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(8), // Bordes redondeados
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    'Crear un cultivo',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ))
+              ],
+            ),
+          ),
+        );
   }
 }

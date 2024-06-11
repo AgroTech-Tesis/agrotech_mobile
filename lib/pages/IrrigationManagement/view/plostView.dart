@@ -1,3 +1,5 @@
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/account.dart';
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/farmer.dart';
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/sensorDataRecord.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/zone.dart';
@@ -9,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PlostView extends StatefulWidget {
-  const PlostView({Key? key}) : super(key: key);
+  Farmer farmer;
+  Account account;
+   PlostView(this.farmer, this.account, {super.key});
 
   @override
   _PlostViewState createState() => _PlostViewState();
@@ -314,7 +318,7 @@ class _PlostViewState extends State<PlostView> {
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          Principalview(),
+                          Principalview(widget.farmer, widget.account),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
                         const begin = Offset(1.0, 0.0);
