@@ -39,9 +39,9 @@ class _PrincipalviewState extends State<Principalview> {
     getRiceCropById(widget.farmer.id!);
     
     futureWeather = WeatherForecastService().getWeatherData('tumbes');
+    
     super.initState();
   }
-
   Future getRiceCropById(int farmerId) async {
     riceCrop = await ricecropservice!.getRiceCropById(farmerId);
     setState(() {
@@ -58,33 +58,50 @@ class _PrincipalviewState extends State<Principalview> {
     }
   }
   Future updateIrrigation() async {
-    DateTime now = DateTime.now();
-    Duration difference = now.difference(irrigations!.createdAt!);
-    irrigations?.daysPreviousIrrigation = difference.inDays;
+    int daysPassed = _calculateDaysPassed(irrigations!.createdAt!);
+    irrigations?.daysPreviousIrrigation = daysPassed;
     if(_isSwitched)
-      irrigations?.status = 'ACTIVE';
-    else
       irrigations?.status = 'INACTIVE';
+    else
+      irrigations?.status = 'ACTIVE';
     irrigations = await irrigationService!.updateIrrigation(irrigations!);
     setState(() {
       irrigations = irrigations;
       _isSwitched = !_isSwitched;
     });
   }
+  int _calculateDaysPassed(String createdAtString) {
+    DateTime createdAt = DateTime.parse(createdAtString); // Convierte la cadena a DateTime
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(createdAt);
+    return difference.inDays;
+  }
   Future createIrrigation() async {
-    Irrigation irrigation = Irrigation(
+    Irrigation newIrrigation = Irrigation(
       riceCropId: riceCrop!.id,
+      daysPreviousIrrigation: daysPreviousIrrigation,
+      irrigationNumber: irrigations != null ? irrigations!.irrigationNumber! + 1: 1,
     );
-    irrigation = (await irrigationService!.createIrrigation(irrigation))!;
+    irrigations = (await irrigationService!.createIrrigation(newIrrigation))!;
     setState(() {
-      irrigation = irrigation;
+      if(irrigations != null){
+        irrigations = irrigations;
+        _isSwitched = !_isSwitched;
+        daysPreviousIrrigation = _calculateDaysPassed(irrigations!.createdAt!);
+      }
     });
   }
   Future getIrrigation(int riceCropId) async {
     irrigations = await irrigationService!.getIrrigations(riceCropId);
     setState(() {
       irrigations = irrigations;
-      daysPreviousIrrigation = irrigations != null ? irrigations!.daysPreviousIrrigation! : 0;
+      if(irrigations != null ){
+        daysPreviousIrrigation = _calculateDaysPassed(irrigations!.createdAt!);
+        if(irrigations!.status == 'ACTIVE'){
+          _isSwitched = true;
+        }else _isSwitched = false;
+      }
+      else _isSwitched = false;
     });
   }
   Future createRiceCrop() async {
@@ -145,7 +162,7 @@ class _PrincipalviewState extends State<Principalview> {
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          if(_isSwitched){
+                          if(!_isSwitched){
                             createIrrigation();
                           }else{
                             updateIrrigation();
@@ -329,7 +346,7 @@ class _PrincipalviewState extends State<Principalview> {
                       top: 10, bottom: 10, left: 25, right: 25),
                   child: Center(
                     child: Text(
-                      'RIEGO  $daysPreviousIrrigation',
+                      'RIEGO  ${irrigations?.irrigationNumber}',
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
                           fontSize: 30,
@@ -344,7 +361,7 @@ class _PrincipalviewState extends State<Principalview> {
                       top: 10, bottom: 10, left: 25, right: 25),
                   child: Center(
                     child: Text(
-                      '10 DIAS TRANSCURRIDOS',
+                      '$daysPreviousIrrigation DIAS TRANSCURRIDOS',
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
                           fontSize: 18,

@@ -9,7 +9,7 @@ String irrigationToJson(List<Irrigation> data) =>
 
 class Irrigation {
   int? id;
-  DateTime ? createdAt;
+  String ? createdAt;
   String? updatedAt;
   String? endedAt;
   double? waterAmount;

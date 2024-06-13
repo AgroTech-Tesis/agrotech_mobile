@@ -4,6 +4,7 @@ import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/signIn.d
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/services/FarmerService.dart';
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/services/SignInService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/principalView.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,6 +27,7 @@ class _SignInState extends State<SignIn> {
   void initState() {
     signInService = HttpSignInService();
     farmerService = FarmerService();
+    signInWithEmailAndPassword();
     super.initState();
   }
   Future signInServiceAccount() async{
@@ -37,6 +39,18 @@ class _SignInState extends State<SignIn> {
         getFarmer(account!);
       }
     });
+  }
+  signInWithEmailAndPassword() async{
+    try{
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: "diegoporta20@hotmail.com", password: "123456789");
+      print("FIRE BASE");
+    } on FirebaseAuthException catch(e){
+      if(e.code == 'user-not-found'){
+        print('No user found for that email');
+      } else if(e.code == 'wrong-password'){
+        print('Wrong password provided for that user');
+      }
+    }
   }
   Future getFarmer(Account account) async{
     farmer = await farmerService!.getFarmerByAccountId(account.id!);

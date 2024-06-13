@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "494818832624",
+    "project_id": "agrotech-f600a",
+    "storage_bucket": "agrotech-f600a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494818832624:android:68cb67b2144cb4afd51235",
+        "android_client_info": {
+          "package_name": "com.example.agrotech_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn_HUEmO_gvOnl_G8r2_PoHxJA9SpJ1PA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
