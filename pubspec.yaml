@@ -39,6 +39,8 @@ dependencies:
   firebase_auth: ^5.1.0
   permission_handler: ^11.3.1
   firebase_messaging: ^15.0.1
+  flutter_local_notifications: ^17.1.2
+  cloud_firestore: ^5.0.1
 
 dev_dependencies:
   flutter_test:
