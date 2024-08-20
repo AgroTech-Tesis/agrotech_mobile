@@ -2,12 +2,16 @@ import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/account.
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/farmer.dart';
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/irrigation.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/model/notification.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/riceCrop.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/deviceService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/irrigationService.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/services/notificationService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/riceCropService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/plostView.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/weatherForecast.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/weatherForecast.dart';
@@ -29,11 +33,14 @@ class _PrincipalviewState extends State<Principalview> {
   Irrigation? irrigations;
   Deviceservice? deviceservice;
   int daysPreviousIrrigation = 0;
+  NotificationEntity? notification;
+  NotificationService? notificationService;
   TextEditingController nameNewRiceCrop = TextEditingController();
   late Future<WeatherForecast> futureWeather;
   @override
   void initState() {
     ricecropservice = Ricecropservice();
+    notificationService = NotificationService();
     irrigationService = IrrigationService();
     deviceservice = Deviceservice();
     getRiceCropById(widget.farmer.id!);
@@ -66,8 +73,12 @@ class _PrincipalviewState extends State<Principalview> {
       irrigations?.status = 'ACTIVE';
     irrigations = await irrigationService!.updateIrrigation(irrigations!);
     setState(() {
-      irrigations = irrigations;
-      _isSwitched = !_isSwitched;
+      if(irrigations != null){
+        irrigations = irrigations;
+        _isSwitched = !_isSwitched;
+        createNotification("Irrigation Disabled", "Irrigation has been deactivated");
+        createNotification("Irrigation Disabled", "A new irrigation has been activated");
+      }
     });
   }
   int _calculateDaysPassed(String createdAtString) {
@@ -75,6 +86,27 @@ class _PrincipalviewState extends State<Principalview> {
     DateTime now = DateTime.now();
     Duration difference = now.difference(createdAt);
     return difference.inDays;
+  }
+  Future createNotification(String title, String body) async {
+    notification = NotificationEntity(
+      title: title,
+      body: body,
+    );
+    notification = await notificationService!.createIrrigation(notification!);
+    setState(() {
+      notification = notification;
+      print(notification);
+      if(notification != null){
+        AwesomeNotifications().createNotification(content: NotificationContent(
+          id: 1, 
+          channelKey: "basic_channel",
+          title: title,
+          body: body,
+          largeIcon: "https://png.pngtree.com/element_our/20200703/ourlarge/pngtree-cartoon-hand-painted-agriculture-rice-paddy-rice-rice-grain-element-image_2301303.jpg",
+          notificationLayout: NotificationLayout.BigPicture,
+        ));
+      }
+    });
   }
   Future createIrrigation() async {
     Irrigation newIrrigation = Irrigation(
@@ -88,6 +120,7 @@ class _PrincipalviewState extends State<Principalview> {
         irrigations = irrigations;
         _isSwitched = !_isSwitched;
         daysPreviousIrrigation = _calculateDaysPassed(irrigations!.createdAt!);
+        createNotification("New irrigation", "A new irrigation has been activated");
       }
     });
   }
@@ -147,7 +180,7 @@ class _PrincipalviewState extends State<Principalview> {
 
                 Padding(padding: EdgeInsets.only(top: 20, bottom: 20),
                 child: Text(!_isSwitched ?
-                  "¿Desea activar el riego?" : "¿Desea desactivar el riego? Recuerde que este proceso es de forma automática",
+                  "Do you want to activate irrigation?" : "Do you want to turn off irrigation? Remember that this process is automatic.",
                   style: GoogleFonts.poppins(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -182,7 +215,7 @@ class _PrincipalviewState extends State<Principalview> {
                           ),
                         ),
                       ),
-                      child: Text("Aceptar", style: GoogleFonts.poppins(
+                      child: Text("Accept", style: GoogleFonts.poppins(
                                         fontSize: 15,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w300
@@ -204,7 +237,7 @@ class _PrincipalviewState extends State<Principalview> {
                           ),
                         ),
                       ),
-                      child: Text("Cancelar", style: GoogleFonts.poppins(
+                      child: Text("Cancel", style: GoogleFonts.poppins(
                                         fontSize: 15,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w300
@@ -259,7 +292,7 @@ class _PrincipalviewState extends State<Principalview> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Bienvenidos',
+                            'Welcome',
                             style: GoogleFonts.poppins(
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
@@ -346,10 +379,10 @@ class _PrincipalviewState extends State<Principalview> {
                       top: 10, bottom: 10, left: 25, right: 25),
                   child: Center(
                     child: Text(
-                      'RIEGO  ${irrigations?.irrigationNumber}',
+                      'IRRIGATION SCHEDULE ${irrigations != null ? irrigations?.irrigationNumber: 0}',
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
-                          fontSize: 30,
+                          fontSize: 25,
                           fontWeight: FontWeight.w600,
                           color: Colors.black87,
                         ),
@@ -361,7 +394,7 @@ class _PrincipalviewState extends State<Principalview> {
                       top: 10, bottom: 10, left: 25, right: 25),
                   child: Center(
                     child: Text(
-                      '$daysPreviousIrrigation DIAS TRANSCURRIDOS',
+                      '$daysPreviousIrrigation DAYS PASSED',
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
                           fontSize: 18,
@@ -422,7 +455,7 @@ class _PrincipalviewState extends State<Principalview> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          'Activar Riego',
+                          'Activate Irrigation',
                           style: GoogleFonts.poppins(
                             textStyle: TextStyle(
                               fontSize: 18,
@@ -444,7 +477,7 @@ class _PrincipalviewState extends State<Principalview> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Cantidad de Agua",
+                      Text("water prediction",
                           style: GoogleFonts.poppins(
                             textStyle: TextStyle(
                               fontSize: 17,
@@ -452,7 +485,7 @@ class _PrincipalviewState extends State<Principalview> {
                               color: Colors.black87,
                             ),
                           )),
-                      Text("100 Lts",
+                      Text("4.917 L",
                           style: GoogleFonts.poppins(
                             textStyle: TextStyle(
                               fontSize: 20,
@@ -504,7 +537,7 @@ class _PrincipalviewState extends State<Principalview> {
                           ),
                         ),
                         Text(
-                          'Parcelas',
+                          'Parcels',
                           style: GoogleFonts.poppins(
                             fontSize: 20,
                             color: Colors.white,
@@ -603,7 +636,7 @@ class _PrincipalviewState extends State<Principalview> {
                               size: 23,
                             )),
                         Text(
-                          "Inicio",
+                          "Home",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
@@ -657,7 +690,7 @@ class _PrincipalviewState extends State<Principalview> {
                               size: 23,
                             )),
                         Text(
-                          "Parcelas",
+                          "Parcels",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 12,
@@ -696,7 +729,7 @@ class _PrincipalviewState extends State<Principalview> {
                               size: 23,
                             )),
                         Text(
-                          "Cerrar Sesión",
+                          "Sign Out",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 12,
@@ -747,7 +780,7 @@ class _PrincipalviewState extends State<Principalview> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Bienvenidos',
+                              'Welcome',
                               style: GoogleFonts.poppins(
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold,
@@ -768,7 +801,7 @@ class _PrincipalviewState extends State<Principalview> {
                   margin: EdgeInsets.only(bottom: 25, top: 25),
                   child: Center(
                     child: Text(
-                      'No tienes cultivos activos',
+                      'You do not have active crops',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                         fontSize: 20, // Tamaño de fuente más grande
@@ -806,7 +839,7 @@ class _PrincipalviewState extends State<Principalview> {
                                 )),
                                 Padding(padding: EdgeInsets.only(top: 20, bottom: 20),
                                   child: Text(
-                                    "¿Desea crear un nuevo cultivo activo para gestionar su riego?",
+                                    "Do you want to create a new active crop to manage your irrigation?",
                                     style: TextStyle(fontSize: 18),
                                     textAlign: TextAlign.center,
                                   ),
@@ -814,7 +847,7 @@ class _PrincipalviewState extends State<Principalview> {
                                 TextField(
                                   controller: nameNewRiceCrop,
                                   decoration: InputDecoration(
-                                    labelText: 'Ingrese el nombre del cultivo',
+                                    labelText: 'Enter crop name',
                                     labelStyle: TextStyle(color: Colors.grey),
                                     filled: true,
                                     fillColor: Colors.grey[100],
@@ -858,7 +891,7 @@ class _PrincipalviewState extends State<Principalview> {
                                           ),
                                         ),
                                       ),
-                                      child: Text("Aceptar", style: GoogleFonts.poppins(
+                                      child: Text("Accept", style: GoogleFonts.poppins(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w300,
                                         color: Colors.white,
@@ -880,7 +913,7 @@ class _PrincipalviewState extends State<Principalview> {
                                           ),
                                         ),
                                       ),
-                                      child: Text("Cancelar", style: GoogleFonts.poppins(
+                                      child: Text("Cancel", style: GoogleFonts.poppins(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w300,
                                         color: Colors.white,
@@ -908,7 +941,7 @@ class _PrincipalviewState extends State<Principalview> {
                     ),
                   ),
                   child: Text(
-                    'Crear un cultivo',
+                    'Create a crop',
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       color: Colors.white,

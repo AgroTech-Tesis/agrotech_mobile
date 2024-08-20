@@ -1,27 +1,51 @@
-import 'package:agrotech_mobile/notification/notification_service.dart';
+import 'package:agrotech_mobile/notification/notification_controller.dart';
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
-import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  await AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelGroupKey: "basic_channel_group",
+        channelKey: 'basic_channel',
+        channelName: 'Basic notifications',
+        channelDescription: 'Basic notification channel',
+      )
+    ],
+    channelGroups: [
+      NotificationChannelGroup(
+        channelGroupKey: "basic_channel_group", 
+        channelGroupName: "Basic Group")
+    ]
   );
-  
-  await LocalNotificationService().requestPermition();
-  await LocalNotificationService().init();
+  bool isAllowedToSendNotification = await AwesomeNotifications().isNotificationAllowed();
+  if(!isAllowedToSendNotification){
+    AwesomeNotifications().requestPermissionToSendNotifications();
+  }
   runApp(const MyApp());
 }
-
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
- 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: NotificationController.onActionReceivedMethod,
+      onNotificationCreatedMethod: NotificationController.onNotificationCreatedMethod,
+      onNotificationDisplayedMethod: NotificationController.onNotificationDisplayedMethod,
+      onDismissActionReceivedMethod: NotificationController.onDismissActionReceivedMethod,
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,38 +54,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  void initState() {
-    notificationHandler();
-    super.initState();
-  }
-
-  void notificationHandler(){
-    FirebaseMessaging.onMessage.listen((event) async{
-      LocalNotificationService().showNotification(event);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    LocalNotificationService().uploadFcmToken();
-    return Scaffold(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
         body: Container(
-      child: SignIn(),
-    ));
+        child: SignIn(),
+      )),
+    );
   }
 }

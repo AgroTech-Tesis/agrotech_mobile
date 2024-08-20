@@ -84,7 +84,6 @@ class _PlostViewState extends State<PlostView> {
                     return IconButton(
                       icon: Icon(Icons.menu),
                       onPressed: () {
-                        print("object");
                         Scaffold.of(context).openDrawer();
                       },
                       color: Colors.white,
@@ -106,7 +105,7 @@ class _PlostViewState extends State<PlostView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Parcelas',
+                          'Parcels',
                           style: GoogleFonts.poppins(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
@@ -151,25 +150,13 @@ class _PlostViewState extends State<PlostView> {
                                     'assets/waterDetail.png', // Ruta de la imagen
                                     height: 150,
                                   ),
-                                  SizedBox(height: 20),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(top: 15, bottom: 15),
-                                    child: Text(
-                                      'Título del Diálogo',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
                                   SizedBox(height: 10),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Humedad del suelo: ',
+                                        'Humidity: ',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
@@ -183,7 +170,7 @@ class _PlostViewState extends State<PlostView> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Temperatura ambiente: ',
+                                        'temperature: ',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
@@ -197,11 +184,11 @@ class _PlostViewState extends State<PlostView> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Consumo de agua: ',
+                                        'Water consumption: ',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
-                                        '10000 m³%',
+                                        '2.443 L',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       )
                                     ],
@@ -213,7 +200,7 @@ class _PlostViewState extends State<PlostView> {
                                     },
                                     color: Color(0xFF297739),
                                     textColor: Colors.white,
-                                    child: Text('Cerrar'),
+                                    child: Text('Close'),
                                     height: 45, // Altura del botón
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(6),
@@ -292,7 +279,7 @@ class _PlostViewState extends State<PlostView> {
                         ),
                       ),
                       Text(
-                        'ashfaksayem@gmail.com',
+                        'diegoporta20@gmail.com',
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w500,
                           fontSize: 10,
@@ -346,7 +333,7 @@ class _PlostViewState extends State<PlostView> {
                             size: 23,
                           )),
                       Text(
-                        "Inicio",
+                        "Home",
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
@@ -383,7 +370,7 @@ class _PlostViewState extends State<PlostView> {
                               color: Colors.white,
                             )),
                         Text(
-                          "Parcelas",
+                          "Parcels",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 12,
@@ -421,7 +408,7 @@ class _PlostViewState extends State<PlostView> {
                             size: 23,
                           )),
                       Text(
-                        "Cerrar Sesión",
+                        "Sign Out",
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           fontSize: 12,
