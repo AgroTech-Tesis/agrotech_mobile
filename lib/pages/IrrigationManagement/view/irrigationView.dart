@@ -79,6 +79,26 @@ class _IrrigationViewState extends State<IrrigationView> {
                 ],
               ),
             ),
+            Container(
+              width: 88,
+              height: 31,
+              decoration: BoxDecoration(
+                color: Color(0xFF297739), // background color
+                borderRadius: BorderRadius.circular(6), // border-radius
+              ),
+              child: Center(
+                child: Text(
+                  'Agregar',
+                  style: TextStyle(
+                    fontFamily: 'Droid Sans',
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                    height: 18 / 15, // line-height equivalent
+                  ),
+                ),
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
