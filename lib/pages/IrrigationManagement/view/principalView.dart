@@ -714,7 +714,22 @@ class _PrincipalviewState extends State<Principalview> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SignIn()),
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            PlostView(widget.farmer, widget.account),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(-1.0, 0.0);
+                          const end = Offset.zero;
+                          final tween = Tween(begin: begin, end: end);
+                          final offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
+                      ),
                     );
                   },
                   child: Padding(
@@ -726,6 +741,45 @@ class _PrincipalviewState extends State<Principalview> {
                             padding: EdgeInsets.only(right: 10),
                             child: Icon(
                               Icons.menu,
+                              size: 23,
+                            )),
+                        Text(
+                          "Irrigation",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                            color: Color(0xFF535763), // Color/Light/Body Text
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                width: 262,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Color(0xFFFAFAFA), // Color de fondo del contenedor
+                  borderRadius: BorderRadius.circular(8), // Borde redondeado
+                ),
+                child: MaterialButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignIn()),
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(
+                              Icons.logout_outlined,
                               size: 23,
                             )),
                         Text(

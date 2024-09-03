@@ -11,6 +11,7 @@ class HttpSignInService {
 
   Future<Account?> signIn(SignInModel signIn) async {
     var uri = Uri.parse(urlService);
+    print(uri);
     final response = await http.post(uri, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       "Accept": "application/json",

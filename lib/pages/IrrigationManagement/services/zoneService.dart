@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class ZoneService {
 
   ZoneService();
-  String urlService = "${localhost}zone";
+  String urlService = "${localhost}zones";
 
   Future<List<Zone>?> getAllZone() async {
     var uri = Uri.parse(urlService);

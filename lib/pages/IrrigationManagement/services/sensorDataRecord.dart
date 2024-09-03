@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class SensordatarecordService {
 
   SensordatarecordService();
-  String urlService = "${localhost}sensor-data-record/pagination";
+  String urlService = "${localhost}sensor-data-records/pagination";
 
   Future<List<SensorDataRecord>> getAllSensorDataRecord({Map<String, dynamic>? params}) async {
     final Uri uri = Uri.parse(urlService).replace(queryParameters: params);

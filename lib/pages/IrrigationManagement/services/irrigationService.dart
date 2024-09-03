@@ -38,7 +38,7 @@ class IrrigationService {
   }
 
   Future<Irrigation?> getIrrigations(int riceCropId) async {
-    var uri = Uri.parse('$urlService/rice-crop/$riceCropId');
+    var uri = Uri.parse('$urlService/rice-crops/$riceCropId');
     final response = await http.get(uri, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       "Accept": "application/json",

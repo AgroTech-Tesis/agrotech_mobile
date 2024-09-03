@@ -1,5 +1,6 @@
 import 'package:agrotech_mobile/notification/notification_controller.dart';
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/irrigationView.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
@@ -58,6 +59,7 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         body: Container(
         child: SignIn(),
+        //child: IrrigationView(),
       )),
     );
   }
