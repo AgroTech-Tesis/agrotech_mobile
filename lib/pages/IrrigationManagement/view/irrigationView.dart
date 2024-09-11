@@ -2,8 +2,10 @@ import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.da
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/riceCrop.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/scheduleIrrigation.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/scheduleIrrigationService.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/agregateIrrigation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class IrrigationView extends StatefulWidget {
   RiceCrop riceCrop;
@@ -67,7 +69,7 @@ class _IrrigationViewState extends State<IrrigationView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Irrigation',
+                          'SCHEDULE IRRIGATION',
                           style: GoogleFonts.poppins(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
@@ -79,22 +81,32 @@ class _IrrigationViewState extends State<IrrigationView> {
                 ],
               ),
             ),
-            Container(
-              width: 88,
-              height: 31,
-              decoration: BoxDecoration(
-                color: Color(0xFF297739), // background color
-                borderRadius: BorderRadius.circular(6), // border-radius
-              ),
-              child: Center(
-                child: Text(
-                  'Agregar',
-                  style: TextStyle(
-                    fontFamily: 'Droid Sans',
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                    height: 18 / 15, // line-height equivalent
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AgregateIrrigation(widget.riceCrop, null),
+                  ),
+                );
+              },
+              child: Container(
+                width: 88,
+                height: 31,
+                decoration: BoxDecoration(
+                  color: Color(0xFF297739), // background color
+                  borderRadius: BorderRadius.circular(6), // border-radius
+                ),
+                child: Center(
+                  child: Text(
+                    'Agregar',
+                    style: TextStyle(
+                      fontFamily: 'Droid Sans',
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                      height: 18 / 15, // line-height equivalent
+                    ),
                   ),
                 ),
               ),
@@ -122,7 +134,7 @@ class _IrrigationViewState extends State<IrrigationView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'RIEGO ${irrigations![index]}',
+                                '${irrigations![index].name}',
                                 style: TextStyle(
                                   fontFamily: 'Droid Sans',
                                   fontWeight: FontWeight.w400,
@@ -144,16 +156,59 @@ class _IrrigationViewState extends State<IrrigationView> {
                             ],
                           ),
                           SizedBox(height: 10),
-                          Text(
-                            'Fecha: ${irrigations![index].irrigationDate}',
-                            style: TextStyle(
-                              fontFamily: 'Droid Sans',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 15,
-                              height: 18 / 15,
-                              color: Colors.black,
-                            ),
-                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Fecha: ${DateFormat('dd/MM/yy \'at\' HH:mm').format(DateTime.parse(irrigations![index].irrigationDate!))}',
+                                style: TextStyle(
+                                  fontFamily: 'Droid Sans',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 15,
+                                  height: 18 / 15,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Container(
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),
+                                      child: TextButton(
+                                        onPressed: (){
+                                          scheduleirrigationservice!.DeleteIrrigation(irrigations![index]);
+                                          getAllScheduleIrrigationByRiceCropId();
+                                        },                                   
+                                        child: Icon(
+                                          Icons.delete,
+                                          size: 23,
+                                          color: Color(0xFFCE3636),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      child: TextButton(
+                                        onPressed: (){
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => AgregateIrrigation(widget.riceCrop, irrigations![index]),
+                                            ),
+                                          );
+                                        },                                   
+                                        child: Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 23,
+                                          color: Color(0xFFE1A023),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),                              
+                            ],
+                          )
                         ],
                       ),
                     ),

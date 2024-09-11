@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:ffi';
+
+import 'package:agrotech_mobile/pages/IrrigationManagement/model/riceCrop.dart';
 
 List<Scheduleirrigation> scheduleirrigationFromJson(String str) =>
     List<Scheduleirrigation>.from(
@@ -11,14 +12,16 @@ String scheduleirrigationToJson(List<Scheduleirrigation> data) =>
 class Scheduleirrigation {
   int? id;
   String ? irrigationDate;
-  Float? irrigationTime;
+  double? irrigationTime;
   String? name;
+  int? riceCropId;
 
   Scheduleirrigation({
     this.id,
     this.irrigationDate,
     this.irrigationTime,
     this.name,
+    this.riceCropId
   });
 
   factory Scheduleirrigation.fromJson(Map<String, dynamic> json) {
@@ -26,7 +29,8 @@ class Scheduleirrigation {
       id: json['id'],
       irrigationDate: json['irrigationDate'],
       irrigationTime: json['irrigationTime'],
-      name: json['name']
+      name: json['name'],
+      riceCropId: json['riceCropId']
     );
   }
 
@@ -35,7 +39,8 @@ class Scheduleirrigation {
       'id': id,
       'irrigationDate': irrigationDate,
       'irrigationTime': irrigationTime,
-      'name': name
+      'name': name,
+      'riceCropId': riceCropId
     };
   }
 }

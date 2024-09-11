@@ -8,6 +8,7 @@ import 'package:agrotech_mobile/pages/IrrigationManagement/services/deviceServic
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/irrigationService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/notificationService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/riceCropService.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/irrigationView.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/plostView.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
@@ -716,7 +717,7 @@ class _PrincipalviewState extends State<Principalview> {
                       context,
                       PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) =>
-                            PlostView(widget.farmer, widget.account),
+                            IrrigationView(riceCrop!),
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
                           const begin = Offset(-1.0, 0.0);

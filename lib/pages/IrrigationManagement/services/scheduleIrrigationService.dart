@@ -8,29 +8,37 @@ class Scheduleirrigationservice {
 
   Scheduleirrigationservice();
   String urlService = "${localhost}irrigation-schedules";
-
-  // Future<Irrigation?> createIrrigation(Irrigation irrigation) async {
-  //   var uri = Uri.parse(urlService);
-  //   final response = await http.post(uri, headers: {
-  //     'Content-Type': 'application/json; charset=UTF-8',
-  //     "Accept": "application/json",
-  //   }, body: jsonEncode(irrigation));
-  //   print(response.body);
-
-  //   if (response.statusCode == 200) {
-  //     return Irrigation.fromJson(jsonDecode(response.body));
-  //   }
-  //   return null;
-  // }
-
-  Future<Scheduleirrigation?> updateIrrigation(Scheduleirrigation irrigation) async {
-    var uri = Uri.parse('$urlService/${irrigation.id}');
+  Future<Scheduleirrigation?> CreateIrrigation(Scheduleirrigation irrigation) async {
+    var uri = Uri.parse(urlService);
+    print(irrigation);
+    final response = await http.post(uri, headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      "Accept": "application/json",
+    }, body: jsonEncode(irrigation));
+    if (response.statusCode == 200) {
+      return Scheduleirrigation.fromJson(jsonDecode(response.body));
+    }
+    return null;
+  }
+  Future<Scheduleirrigation?> UpdateIrrigation(Scheduleirrigation irrigation) async {
+    var uri = Uri.parse(urlService);
+    print(irrigation);
     final response = await http.put(uri, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       "Accept": "application/json",
     }, body: jsonEncode(irrigation));
-    print(response.body);
-
+    if (response.statusCode == 200) {
+      return Scheduleirrigation.fromJson(jsonDecode(response.body));
+    }
+    return null;
+  }
+  Future<Scheduleirrigation?> DeleteIrrigation(Scheduleirrigation irrigation) async {
+    var uri = Uri.parse(urlService);
+    print(irrigation);
+    final response = await http.delete(uri, headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      "Accept": "application/json",
+    }, body: jsonEncode(irrigation));
     if (response.statusCode == 200) {
       return Scheduleirrigation.fromJson(jsonDecode(response.body));
     }
