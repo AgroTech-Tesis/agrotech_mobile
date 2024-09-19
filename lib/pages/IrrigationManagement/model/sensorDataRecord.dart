@@ -8,33 +8,29 @@ String sensorDataRecordToJson(List<SensorDataRecord> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class SensorDataRecord {
-  int? id;
-  String? typeSensor;
-  String? createdAt;
-  double? lastValue;
+  String? flowSensor;
+  String? humiditySensor;
+  double? temperatureSensor;
 
   SensorDataRecord({
-    this.id,
-    this.typeSensor,
-    this.createdAt,
-    this.lastValue,
+    this.flowSensor,
+    this.humiditySensor,
+    this.temperatureSensor,
   });
 
   factory SensorDataRecord.fromJson(Map<String, dynamic> json) {
     return SensorDataRecord(
-      id: json['id'],
-      typeSensor: json['typeSensor'],
-      createdAt: json['createdAt'],
-      lastValue: json['lastValue'],
+      flowSensor: json['flowSensor'],
+      humiditySensor: json['humiditySensor'],
+      temperatureSensor: json['temperatureSensor'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'typeSensor': typeSensor,
-      'createdAt': createdAt,
-      'lastValue': lastValue,
+      'flowSensor': flowSensor,
+      'humiditySensor': humiditySensor,
+      'temperatureSensor': temperatureSensor,
     };
   }
 }

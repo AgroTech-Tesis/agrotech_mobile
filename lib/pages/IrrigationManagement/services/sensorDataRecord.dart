@@ -4,18 +4,19 @@ import 'package:agrotech_mobile/pages/IrrigationManagement/model/sensorDataRecor
 import 'package:http/http.dart' as http;
 
 class SensordatarecordService {
-
   SensordatarecordService();
-  String urlService = "${localhost}sensor-data-records/pagination";
+  String urlService = "${localhost}sensor-data-records/average";
 
-  Future<List<SensorDataRecord>> getAllSensorDataRecord({Map<String, dynamic>? params}) async {
-    final Uri uri = Uri.parse(urlService).replace(queryParameters: params);
-  
+  Future<List<SensorDataRecord>> getAllSensorDataRecord() async {
+    var uri = Uri.parse(urlService);
+
     final response = await http.get(uri);
 
-    if (response.statusCode == 200) { 
+    if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(response.body);
-      return jsonResponse.map((zone) => SensorDataRecord.fromJson(zone)).toList();
+      return jsonResponse
+          .map((zone) => SensorDataRecord.fromJson(zone))
+          .toList();
     } else {
       throw Exception('Failed to load data');
     }

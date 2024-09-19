@@ -13,7 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 class PlostView extends StatefulWidget {
   Farmer farmer;
   Account account;
-   PlostView(this.farmer, this.account, {super.key});
+  PlostView(this.farmer, this.account, {super.key});
 
   @override
   _PlostViewState createState() => _PlostViewState();
@@ -22,10 +22,6 @@ class PlostView extends StatefulWidget {
 class _PlostViewState extends State<PlostView> {
   List<Zone>? plosts;
   List<SensorDataRecord>? sensorDataRecords;
-  List<String> typeSensorData = ['SENSOR DE CAUDAL', 'SENSOR DE HUMEDAD', 'SENSOR DE TEMPERATURA'];
-  Map<String, dynamic> queryParams = {
-    'zoneId': '',
-  };
   ZoneDetail zoneDetail = ZoneDetail();
   ZoneService? zoneService;
   SensordatarecordService sensorDataRecordSenvice = SensordatarecordService();
@@ -45,30 +41,14 @@ class _PlostViewState extends State<PlostView> {
     });
     print(sensorDataRecords);
   }
-  
-  void getSensorDataRecord(String zoneId) async {
-    var roomTemperature = 0;
-    var roomHumidity = 0;
-    var waterConsumption = 0;
-    queryParams['zoneId'] = zoneId;
-    sensorDataRecords = await sensorDataRecordSenvice.getAllSensorDataRecord(params: queryParams);
+
+  void getSensorDataRecord() async {
+    sensorDataRecords = await sensorDataRecordSenvice.getAllSensorDataRecord();
     setState(() {
       sensorDataRecords = sensorDataRecords;
     });
-    sensorDataRecords?.forEach((element) {
-      if(element.typeSensor == typeSensorData[0])
-        roomTemperature += element.lastValue!.toInt();
-      if(element.typeSensor == typeSensorData[1])
-        roomHumidity += element.lastValue!.toInt();
-      if(element.typeSensor == typeSensorData[2])
-        waterConsumption += element.lastValue!.toInt();
-    });
-    zoneDetail = ZoneDetail(
-      naHumidityOfFloor: roomHumidity.toString(),
-      roomTemperature: roomTemperature.toString(),
-      waterConsumption: waterConsumption.toString(),
-    );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,7 +140,7 @@ class _PlostViewState extends State<PlostView> {
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
-                                        '50%',
+                                        '${sensorDataRecords![index].humiditySensor} %',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       )
                                     ],
@@ -174,7 +154,7 @@ class _PlostViewState extends State<PlostView> {
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
-                                        '28°C',
+                                        '${sensorDataRecords![index].temperatureSensor} °C',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       )
                                     ],
@@ -188,7 +168,7 @@ class _PlostViewState extends State<PlostView> {
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
-                                        '2.443 L',
+                                        '${sensorDataRecords![index].flowSensor} L',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       )
                                     ],
