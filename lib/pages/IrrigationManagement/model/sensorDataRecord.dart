@@ -8,8 +8,8 @@ String sensorDataRecordToJson(List<SensorDataRecord> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class SensorDataRecord {
-  String? flowSensor;
-  String? humiditySensor;
+  double? flowSensor;
+  double? humiditySensor;
   double? temperatureSensor;
 
   SensorDataRecord({

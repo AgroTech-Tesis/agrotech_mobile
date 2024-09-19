@@ -17,7 +17,10 @@ class HttpSignInService {
           "Accept": "application/json",
         },
         body: jsonEncode(signIn));
-
-    return Account.fromJson(jsonDecode(response.body));
+    if (response.statusCode == 200) {
+      return Account.fromJson(jsonDecode(response.body));
+    } else {
+      return response.body;
+    }
   }
 }

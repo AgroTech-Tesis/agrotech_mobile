@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 class AgregateIrrigation extends StatefulWidget {
   RiceCrop riceCrop;
   Scheduleirrigation? updateIrrigation;
-  AgregateIrrigation(this.riceCrop, this.updateIrrigation, { super.key });
+  AgregateIrrigation(this.riceCrop, this.updateIrrigation, {super.key});
 
   @override
   _AgregateIrrigationState createState() => _AgregateIrrigationState();
@@ -26,9 +26,11 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
   @override
   void initState() {
     scheduleirrigationservice = Scheduleirrigationservice();
+    isUpdate();
     super.initState();
   }
-  Future agregateIrrigation() async{
+
+  Future agregateIrrigation() async {
     DateTime selectedDate = DateTime.parse(dateIrrigation.text);
     DateFormat inputFormat = DateFormat("h:mm a");
 
@@ -48,32 +50,41 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
 
     String formattedIrrigationDate = irrigationDateTime.toIso8601String();
     scheduleirrigationCreate = Scheduleirrigation(
-      id: widget.updateIrrigation?.id,
-      irrigationDate: formattedIrrigationDate,
-      irrigationTime: double.parse(dateTime.text),
-      name: name.text,
-      riceCropId: widget.riceCrop.id
-    );
-    if(widget.updateIrrigation != null){
-      scheduleirrigation = await scheduleirrigationservice?.UpdateIrrigation(scheduleirrigationCreate!);
-    }else{
-      scheduleirrigation = await scheduleirrigationservice?.CreateIrrigation(scheduleirrigationCreate!);
+        id: widget.updateIrrigation?.id,
+        irrigationDate: formattedIrrigationDate,
+        irrigationTime: double.parse(dateTime.text),
+        name: name.text,
+        riceCropId: widget.riceCrop.id);
+    if (widget.updateIrrigation != null) {
+      scheduleirrigation = await scheduleirrigationservice?.UpdateIrrigation(
+          scheduleirrigationCreate!);
+    } else {
+      scheduleirrigation = await scheduleirrigationservice?.CreateIrrigation(
+          scheduleirrigationCreate!);
     }
-    scheduleirrigation = await scheduleirrigationservice?.CreateIrrigation(scheduleirrigationCreate!);
+    scheduleirrigation = await scheduleirrigationservice?.CreateIrrigation(
+        scheduleirrigationCreate!);
     setState(() {
       scheduleirrigation = scheduleirrigation;
-      
-      if(scheduleirrigation != null){
-        Navigator.push(context,MaterialPageRoute(builder: (context) => IrrigationView(widget.riceCrop)),);
+
+      if (scheduleirrigation != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => IrrigationView(widget.riceCrop)),
+        );
       }
     });
   }
-  Future<void> isUpdate(BuildContext context) async {
-    if(widget.updateIrrigation != null){
+
+  Future<void> isUpdate() async {
+    if (widget.updateIrrigation != null) {
       name.text = widget.updateIrrigation!.name!;
       dateTime.text = widget.updateIrrigation!.irrigationTime.toString();
-      dateIrrigation.text = DateFormat('yyyy-MM-dd').format(DateTime.parse(widget.updateIrrigation!.irrigationDate!));
-      hourIrrigation.text = DateFormat('h:mm a').format(DateTime.parse(widget.updateIrrigation!.irrigationDate!));
+      dateIrrigation.text = DateFormat('yyyy-MM-dd')
+          .format(DateTime.parse(widget.updateIrrigation!.irrigationDate!));
+      hourIrrigation.text = DateFormat('h:mm a')
+          .format(DateTime.parse(widget.updateIrrigation!.irrigationDate!));
     }
   }
 
@@ -86,7 +97,8 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
     );
     if (picked != null) {
       setState(() {
-        dateIrrigation.text = picked.toString().split(' ')[0]; // Formatea la fecha
+        dateIrrigation.text =
+            picked.toString().split(' ')[0]; // Formatea la fecha
       });
     }
   }
@@ -108,11 +120,14 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Agregate Irrigation', style: GoogleFonts.poppins(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-          color: Color.fromARGB(255, 0, 0, 0),
-        ),),
+        title: Text(
+          'Agregate Irrigation',
+          style: GoogleFonts.poppins(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+        ),
         backgroundColor: Colors.white,
       ),
       body: Container(
@@ -242,33 +257,33 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
                 child: Image.asset('assets/shedule-irrigation.png'),
               ),
               Container(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: TextButton(
-                  onPressed: () {                        
-                    agregateIrrigation();
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      Color(0xFF297739),
-                    ),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                      Size(double.infinity, 60),
-                    ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(8), // Bordes redondeados
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: TextButton(
+                    onPressed: () {
+                      agregateIrrigation();
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        Color(0xFF297739),
+                      ),
+                      minimumSize: MaterialStateProperty.all<Size>(
+                        Size(double.infinity, 60),
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(8), // Bordes redondeados
+                        ),
                       ),
                     ),
-                  ),
-                  child: Text(
-                    'Agregar',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      color: Colors.white,
+                    child: Text(
+                      'Agregar',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-              ))
+                  ))
             ],
           ),
         ),

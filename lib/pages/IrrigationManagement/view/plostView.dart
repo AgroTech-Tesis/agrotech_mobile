@@ -30,7 +30,7 @@ class _PlostViewState extends State<PlostView> {
   void initState() {
     zoneService = ZoneService();
     getAllZone();
-    //getSensorDataRecord();
+    getSensorDataRecord();
     super.initState();
   }
 
