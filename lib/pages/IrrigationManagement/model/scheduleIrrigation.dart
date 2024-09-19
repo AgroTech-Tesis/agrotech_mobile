@@ -11,27 +11,28 @@ String scheduleirrigationToJson(List<Scheduleirrigation> data) =>
 
 class Scheduleirrigation {
   int? id;
-  String ? irrigationDate;
+  String? irrigationDate;
   double? irrigationTime;
   String? name;
+  String? status;
   int? riceCropId;
 
-  Scheduleirrigation({
-    this.id,
-    this.irrigationDate,
-    this.irrigationTime,
-    this.name,
-    this.riceCropId
-  });
+  Scheduleirrigation(
+      {this.id,
+      this.irrigationDate,
+      this.irrigationTime,
+      this.name,
+      this.status,
+      this.riceCropId});
 
   factory Scheduleirrigation.fromJson(Map<String, dynamic> json) {
     return Scheduleirrigation(
-      id: json['id'],
-      irrigationDate: json['irrigationDate'],
-      irrigationTime: json['irrigationTime'],
-      name: json['name'],
-      riceCropId: json['riceCropId']
-    );
+        id: json['id'],
+        irrigationDate: json['irrigationDate'],
+        irrigationTime: json['irrigationTime'],
+        name: json['name'],
+        status: json['status'],
+        riceCropId: json['riceCropId']);
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +41,7 @@ class Scheduleirrigation {
       'irrigationDate': irrigationDate,
       'irrigationTime': irrigationTime,
       'name': name,
+      'status': status,
       'riceCropId': riceCropId
     };
   }

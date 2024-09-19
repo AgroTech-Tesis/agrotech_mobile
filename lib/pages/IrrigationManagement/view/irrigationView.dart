@@ -1,15 +1,21 @@
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/account.dart';
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/farmer.dart';
 import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/riceCrop.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/scheduleIrrigation.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/scheduleIrrigationService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/agregateIrrigation.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/plostView.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/view/principalView.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class IrrigationView extends StatefulWidget {
   RiceCrop riceCrop;
-  IrrigationView(this.riceCrop, {super.key}) ;
+  Farmer farmer;
+  Account account;
+  IrrigationView(this.riceCrop, this.farmer, this.account, {super.key});
 
   @override
   _IrrigationViewState createState() => _IrrigationViewState();
@@ -17,19 +23,23 @@ class IrrigationView extends StatefulWidget {
 
 class _IrrigationViewState extends State<IrrigationView> {
   List<Scheduleirrigation>? irrigations;
-   Scheduleirrigationservice? scheduleirrigationservice;
+  Scheduleirrigationservice? scheduleirrigationservice;
+  String? statusOption;
   @override
   void initState() {
     scheduleirrigationservice = Scheduleirrigationservice();
-    getAllScheduleIrrigationByRiceCropId();
+    getAllScheduleIrrigationByRiceCropId(null);
     //getSensorDataRecord();
     super.initState();
   }
-  Future getAllScheduleIrrigationByRiceCropId() async{
-    irrigations = await scheduleirrigationservice!.getIrrigationsByRiceCropId(widget.riceCrop.id!);
+
+  Future getAllScheduleIrrigationByRiceCropId(String? status) async {
+    irrigations = await scheduleirrigationservice!
+        .getIrrigationsByRiceCropId(widget.riceCrop.id!, status);
     setState(() {
       irrigations = irrigations;
     });
+    statusOption = status;
   }
 
   @override
@@ -38,7 +48,7 @@ class _IrrigationViewState extends State<IrrigationView> {
       backgroundColor: Colors.white,
       body: Center(
         child: Column(
-          children: [            
+          children: [
             Container(
               margin: const EdgeInsets.only(
                   top: 10, bottom: 10, left: 25, right: 25),
@@ -81,14 +91,52 @@ class _IrrigationViewState extends State<IrrigationView> {
                 ],
               ),
             ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  buildStatusCard(
+                    'assets/pending.png',
+                    'Pending Irrigation',
+                    Color(0xFF297739),
+                    statusOption == 'PENDING',
+                    () => getAllScheduleIrrigationByRiceCropId(
+                        'PENDING'), // Acción al hacer clic
+                  ),
+                  buildStatusCard(
+                    'assets/irrigation.png',
+                    'Irrigation In Progress',
+                    Colors.black,
+                    statusOption == 'IRRIGATION',
+                    () => getAllScheduleIrrigationByRiceCropId('IRRIGATION'),
+                  ),
+                  buildStatusCard(
+                    'assets/finish.png',
+                    'Irrigation Completed',
+                    Colors.black,
+                    statusOption == 'IRRIGATION',
+                    () => getAllScheduleIrrigationByRiceCropId('IRRIGATION'),
+                  ),
+                  buildStatusCard(
+                    'assets/clean.png',
+                    'Clean',
+                    Colors.black,
+                    statusOption == null,
+                    () => getAllScheduleIrrigationByRiceCropId(null),
+                  ),
+                ],
+              ),
+            ),
             TextButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AgregateIrrigation(widget.riceCrop, null),
+                    builder: (context) =>
+                        AgregateIrrigation(widget.riceCrop, null),
                   ),
                 );
+                getAllScheduleIrrigationByRiceCropId(null);
               },
               child: Container(
                 width: 88,
@@ -125,7 +173,8 @@ class _IrrigationViewState extends State<IrrigationView> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,12 +223,16 @@ class _IrrigationViewState extends State<IrrigationView> {
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),
+                                      padding:
+                                          const EdgeInsets.fromLTRB(0, 0, 3, 0),
                                       child: TextButton(
-                                        onPressed: (){
-                                          scheduleirrigationservice!.DeleteIrrigation(irrigations![index]);
-                                          getAllScheduleIrrigationByRiceCropId();
-                                        },                                   
+                                        onPressed: () {
+                                          scheduleirrigationservice!
+                                              .DeleteIrrigation(
+                                                  irrigations![index]);
+                                          getAllScheduleIrrigationByRiceCropId(
+                                              null);
+                                        },
                                         child: Icon(
                                           Icons.delete,
                                           size: 23,
@@ -189,14 +242,19 @@ class _IrrigationViewState extends State<IrrigationView> {
                                     ),
                                     Container(
                                       child: TextButton(
-                                        onPressed: (){
-                                          Navigator.push(
+                                        onPressed: () {
+                                          Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => AgregateIrrigation(widget.riceCrop, irrigations![index]),
+                                              builder: (context) =>
+                                                  AgregateIrrigation(
+                                                      widget.riceCrop,
+                                                      irrigations![index]),
                                             ),
                                           );
-                                        },                                   
+                                          getAllScheduleIrrigationByRiceCropId(
+                                              null);
+                                        },
                                         child: Icon(
                                           Icons.arrow_forward_ios,
                                           size: 23,
@@ -206,7 +264,7 @@ class _IrrigationViewState extends State<IrrigationView> {
                                     ),
                                   ],
                                 ),
-                              ),                              
+                              ),
                             ],
                           )
                         ],
@@ -294,7 +352,7 @@ class _IrrigationViewState extends State<IrrigationView> {
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
                           //Principalview(widget.farmer, widget.account),
-                          SignIn(),
+                          Principalview(widget.farmer, widget.account),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
                         const begin = Offset(1.0, 0.0);
@@ -349,7 +407,8 @@ class _IrrigationViewState extends State<IrrigationView> {
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
                           //Principalview(widget.farmer, widget.account),
-                          SignIn(),
+                          PlostView(
+                              widget.riceCrop, widget.farmer, widget.account),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
                         const begin = Offset(1.0, 0.0);
@@ -389,7 +448,6 @@ class _IrrigationViewState extends State<IrrigationView> {
                 ),
               ),
             ),
-            
             Container(
               margin: EdgeInsets.only(left: 15, right: 15, bottom: 10),
               width: 262,
@@ -465,6 +523,50 @@ class _IrrigationViewState extends State<IrrigationView> {
                 ),
               ),
             )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildStatusCard(String image, String label, Color borderColor,
+      bool isSelected, VoidCallback onTap) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+      child: InkWell(
+        onTap: onTap, // Acción que se ejecuta al hacer clic
+        child: Column(
+          children: [
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected
+                      ? Colors.green
+                      : borderColor, // Cambia el color si está seleccionado
+                  width: isSelected
+                      ? 3.0
+                      : 1.0, // Borde grueso si está seleccionado
+                ),
+                image: DecorationImage(
+                  image: AssetImage(image),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+                height: 2.25,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

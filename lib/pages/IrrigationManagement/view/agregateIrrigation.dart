@@ -53,6 +53,7 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
         id: widget.updateIrrigation?.id,
         irrigationDate: formattedIrrigationDate,
         irrigationTime: double.parse(dateTime.text),
+        status: widget.updateIrrigation?.status,
         name: name.text,
         riceCropId: widget.riceCrop.id);
     if (widget.updateIrrigation != null) {
@@ -62,17 +63,11 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
       scheduleirrigation = await scheduleirrigationservice?.CreateIrrigation(
           scheduleirrigationCreate!);
     }
-    scheduleirrigation = await scheduleirrigationservice?.CreateIrrigation(
-        scheduleirrigationCreate!);
     setState(() {
       scheduleirrigation = scheduleirrigation;
 
       if (scheduleirrigation != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => IrrigationView(widget.riceCrop)),
-        );
+        Navigator.pop(context);
       }
     });
   }
@@ -117,177 +112,182 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          'Agregate Irrigation',
-          style: GoogleFonts.poppins(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            color: Color.fromARGB(255, 0, 0, 0),
+    return WillPopScope(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(
+              'Agregate Irrigation',
+              style: GoogleFonts.poppins(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: Color.fromARGB(255, 0, 0, 0),
+              ),
+            ),
+            backgroundColor: Colors.white,
           ),
-        ),
-        backgroundColor: Colors.white,
-      ),
-      body: Container(
-        padding: const EdgeInsets.only(
-          left: 25,
-          right: 25,
-        ),
-        child: Center(
-          child: ListView(
-            children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
-                child: Text(
-                  'Nombre del riego',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: TextField(
-                  controller: name,
-                  decoration: const InputDecoration(
-                    labelStyle: TextStyle(
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Color(0xFF635C5C),
-                    ),
-                    border: OutlineInputBorder(),
-                    // Otros atributos de decoración que desees agregar
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
-                child: Text(
-                  'Duración',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: TextField(
-                  controller: dateTime,
-                  decoration: const InputDecoration(
-                    labelStyle: TextStyle(
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Color(0xFF635C5C),
-                    ),
-                    border: OutlineInputBorder(),
-                    // Otros atributos de decoración que desees agregar
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
-                child: Text(
-                  'Fecha del Riego',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: TextField(
-                  controller: dateIrrigation,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    labelStyle: const TextStyle(
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Color(0xFF635C5C),
-                    ),
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.calendar_today_outlined),
-                      onPressed: () => _selectDate(context),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
-                child: Text(
-                  'Hora del Riego',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: TextField(
-                  controller: hourIrrigation,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    labelStyle: const TextStyle(
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: Color(0xFF635C5C),
-                    ),
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.access_time),
-                      onPressed: () => _selectTime(context),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 20),
-                width: 200,
-                height: 200,
-                child: Image.asset('assets/shedule-irrigation.png'),
-              ),
-              Container(
-                  padding: const EdgeInsets.only(bottom: 15),
-                  child: TextButton(
-                    onPressed: () {
-                      agregateIrrigation();
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        Color(0xFF297739),
+          body: Container(
+            padding: const EdgeInsets.only(
+              left: 25,
+              right: 25,
+            ),
+            child: Center(
+              child: ListView(
+                children: [
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
+                    child: Text(
+                      'Nombre del riego',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
-                      minimumSize: MaterialStateProperty.all<Size>(
-                        Size(double.infinity, 60),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: TextField(
+                      controller: name,
+                      decoration: const InputDecoration(
+                        labelStyle: TextStyle(
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Color(0xFF635C5C),
+                        ),
+                        border: OutlineInputBorder(),
+                        // Otros atributos de decoración que desees agregar
                       ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(8), // Bordes redondeados
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
+                    child: Text(
+                      'Duración',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: TextField(
+                      controller: dateTime,
+                      decoration: const InputDecoration(
+                        labelStyle: TextStyle(
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Color(0xFF635C5C),
+                        ),
+                        border: OutlineInputBorder(),
+                        // Otros atributos de decoración que desees agregar
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
+                    child: Text(
+                      'Fecha del Riego',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: TextField(
+                      controller: dateIrrigation,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelStyle: const TextStyle(
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Color(0xFF635C5C),
+                        ),
+                        border: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.calendar_today_outlined),
+                          onPressed: () => _selectDate(context),
                         ),
                       ),
                     ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
                     child: Text(
-                      'Agregar',
+                      'Hora del Riego',
                       style: GoogleFonts.poppins(
-                        fontSize: 20,
-                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ))
-            ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: TextField(
+                      controller: hourIrrigation,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelStyle: const TextStyle(
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: Color(0xFF635C5C),
+                        ),
+                        border: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.access_time),
+                          onPressed: () => _selectTime(context),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 20),
+                    width: 200,
+                    height: 200,
+                    child: Image.asset('assets/shedule-irrigation.png'),
+                  ),
+                  Container(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: TextButton(
+                        onPressed: () {
+                          agregateIrrigation();
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            Color(0xFF297739),
+                          ),
+                          minimumSize: MaterialStateProperty.all<Size>(
+                            Size(double.infinity, 60),
+                          ),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  8), // Bordes redondeados
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Agregar',
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ))
+                ],
+              ),
+            ),
           ),
         ),
-      ),
-    );
+        onWillPop: () async {
+          return true;
+        });
   }
 }

@@ -54,7 +54,7 @@ class _SignInState extends State<SignIn> {
                   children: [
                     Image.asset(
                       'assets/error.png',
-                      height: 100,
+                      height: 70,
                     ),
                     SizedBox(height: 16),
                     Text(
