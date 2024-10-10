@@ -114,7 +114,7 @@ class _IrrigationViewState extends State<IrrigationView> {
                     'assets/finish.png',
                     'Irrigation Completed',
                     Colors.black,
-                    statusOption == 'IRRIGATION',
+                    statusOption == 'FINISHED',
                     () => getAllScheduleIrrigationByRiceCropId('IRRIGATION'),
                   ),
                   buildStatusCard(

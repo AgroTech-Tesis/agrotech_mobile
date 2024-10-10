@@ -9,11 +9,13 @@ String sensorDataRecordToJson(List<SensorDataRecord> data) =>
 
 class SensorDataRecord {
   double? flowSensor;
+  double? humidityRelativeSensor;
   double? humiditySensor;
   double? temperatureSensor;
 
   SensorDataRecord({
     this.flowSensor,
+    this.humidityRelativeSensor,
     this.humiditySensor,
     this.temperatureSensor,
   });
@@ -21,6 +23,7 @@ class SensorDataRecord {
   factory SensorDataRecord.fromJson(Map<String, dynamic> json) {
     return SensorDataRecord(
       flowSensor: json['flowSensor'],
+      humidityRelativeSensor: json['humidityRelativeSensor'],
       humiditySensor: json['humiditySensor'],
       temperatureSensor: json['temperatureSensor'],
     );
@@ -29,6 +32,7 @@ class SensorDataRecord {
   Map<String, dynamic> toJson() {
     return {
       'flowSensor': flowSensor,
+      'humidityRelativeSensor': humidityRelativeSensor,
       'humiditySensor': humiditySensor,
       'temperatureSensor': temperatureSensor,
     };

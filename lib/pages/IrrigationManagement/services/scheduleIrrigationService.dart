@@ -57,12 +57,12 @@ class Scheduleirrigationservice {
 
   Future<List<Scheduleirrigation>?> getIrrigationsByRiceCropId(
       int riceCropId, String? status) async {
-    Map<String, String> queryParams = {};
-    if (status != null) {
-      queryParams['status'] = status;
-    }
-    var uri = Uri.http('localhost:8080',
-        '/irrigation-schedules/rice-crops/$riceCropId', queryParams);
+    Map<String, dynamic> queryParams = {
+      'status': status,
+    };
+
+    final Uri uri = Uri.parse('$urlService/rice-crops/$riceCropId')
+        .replace(queryParameters: status != null ? queryParams : null);
 
     final response = await http.get(uri, headers: {
       'Content-Type': 'application/json; charset=UTF-8',

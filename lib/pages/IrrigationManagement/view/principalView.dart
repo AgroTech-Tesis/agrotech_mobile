@@ -46,7 +46,7 @@ class _PrincipalviewState extends State<Principalview> {
     deviceservice = Deviceservice();
     getRiceCropById(widget.farmer.id!);
 
-    futureWeather = WeatherForecastService().getWeatherData('tumbes');
+    futureWeather = WeatherForecastService().getWeatherData('catacaos');
 
     super.initState();
   }
@@ -357,7 +357,7 @@ class _PrincipalviewState extends State<Principalview> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Tumbes, Perú',
+                              'Catacaos, Perú',
                               style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                   fontSize: 16,

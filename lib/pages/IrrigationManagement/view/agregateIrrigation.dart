@@ -117,7 +117,7 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
           backgroundColor: Colors.white,
           appBar: AppBar(
             title: Text(
-              'Agregate Irrigation',
+              'Add Irrigation Schedule',
               style: GoogleFonts.poppins(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,

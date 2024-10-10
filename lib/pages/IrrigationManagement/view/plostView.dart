@@ -144,7 +144,21 @@ class _PlostViewState extends State<PlostView> {
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
-                                        '${sensorDataRecords![index].humiditySensor} %',
+                                        '${sensorDataRecords![index].humiditySensor?.toStringAsFixed(2)} %',
+                                        style: GoogleFonts.rubik(fontSize: 13),
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Air Humidity: ',
+                                        style: GoogleFonts.rubik(fontSize: 13),
+                                      ),
+                                      Text(
+                                        '${sensorDataRecords![index].humidityRelativeSensor?.toStringAsFixed(2)} %',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       )
                                     ],
@@ -158,7 +172,7 @@ class _PlostViewState extends State<PlostView> {
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
-                                        '${sensorDataRecords![index].temperatureSensor} °C',
+                                        '${sensorDataRecords![index].temperatureSensor?.toStringAsFixed(2)} °C',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       )
                                     ],
@@ -172,7 +186,7 @@ class _PlostViewState extends State<PlostView> {
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       ),
                                       Text(
-                                        '${sensorDataRecords![index].flowSensor} L',
+                                        '${sensorDataRecords![index].flowSensor?.toStringAsFixed(2)} L',
                                         style: GoogleFonts.rubik(fontSize: 13),
                                       )
                                     ],
