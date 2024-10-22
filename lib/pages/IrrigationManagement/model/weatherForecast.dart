@@ -12,7 +12,24 @@ class WeatherForecast {
     required this.tempMax,
     required this.description,
   });
-
+  String getWeatherIcon() {
+    print(description);
+    if (description.contains('cielo despejado')) {
+      return 'assets/sunny.png';
+    } else if (description.contains('nubes dispersas')) {
+      return 'assets/cloudy.png';
+    } else if (description.contains('lluvioso')) {
+      return 'assets/rainy.png';
+    } else if (description.contains('tormenta eléctrica')) {
+      return 'assets/thunderstorm.png';
+    } else if (description.contains('nieve')) {
+      return 'assets/snow.png';
+    } else if (description.contains('niebla')) {
+      return 'assets/mist.png';
+    } else {
+      return 'assets/default_weather.png';
+    }
+  }
   factory WeatherForecast.fromJson(Map<String, dynamic> json) {
     return WeatherForecast(
       name: json['name'],

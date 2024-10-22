@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class NotificationService {
   NotificationService();
-  String urlService = "${localhost}notification";
+  String urlService = "${localhost}notifications";
 
   Future<NotificationEntity?> createIrrigation(NotificationEntity irrigation) async {
     var uri = Uri.parse(urlService);

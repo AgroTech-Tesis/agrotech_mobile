@@ -60,7 +60,6 @@ class _PrincipalviewState extends State<Principalview> {
       }
     });
   }
-
   Future deviceIotRiceCrop(int riceCropId) async {
     var response = await deviceservice!.deviceIotRiceCrop(riceCropId);
     if (response != null) {
@@ -178,7 +177,7 @@ class _PrincipalviewState extends State<Principalview> {
     showDialog(
       context: context,
       barrierDismissible:
-          true, // Permite cerrar el diálogo al tocar fuera de él
+          true,
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -333,10 +332,8 @@ class _PrincipalviewState extends State<Principalview> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(
-                        top: 15, bottom: 15, left: 10, right: 10),
-                    margin: EdgeInsets.only(
-                        left: 25, right: 25, top: 25, bottom: 15),
+                    padding: EdgeInsets.only(top: 15, bottom: 15, left: 10, right: 10),
+                    margin: EdgeInsets.only(left: 25, right: 25, top: 25, bottom: 15),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(14),
@@ -370,22 +367,36 @@ class _PrincipalviewState extends State<Principalview> {
                             FutureBuilder<WeatherForecast>(
                               future: futureWeather,
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
                                   return CircularProgressIndicator();
                                 } else if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 } else if (snapshot.hasData) {
                                   final weather = snapshot.data!;
-                                  return Text(
-                                    '${weather.tempCelcius}°C',
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                        fontSize: 55,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black87,
+                                  return Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${weather.tempCelcius}°C',
+                                            style: GoogleFonts.poppins(
+                                              textStyle: TextStyle(
+                                                fontSize: 55,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
+                                      SizedBox(width: 20),
+                                      Image.asset(
+                                        weather.getWeatherIcon(), 
+                                        width: 110,
+                                        height: 110,
+                                      ),
+                                    ],
                                   );
                                 } else {
                                   return Text('No data');
@@ -393,12 +404,6 @@ class _PrincipalviewState extends State<Principalview> {
                               },
                             ),
                           ],
-                        ),
-                        SizedBox(width: 20),
-                        Image.asset(
-                          'assets/clima1.png',
-                          width: 110,
-                          height: 110,
                         ),
                       ],
                     ),
@@ -725,7 +730,7 @@ class _PrincipalviewState extends State<Principalview> {
                             Padding(
                                 padding: EdgeInsets.only(right: 10),
                                 child: Icon(
-                                  Icons.menu,
+                                  Icons.sensors,
                                   size: 23,
                                 )),
                             Text(
@@ -783,7 +788,7 @@ class _PrincipalviewState extends State<Principalview> {
                             Padding(
                                 padding: EdgeInsets.only(right: 10),
                                 child: Icon(
-                                  Icons.menu,
+                                  Icons.grass_outlined,
                                   size: 23,
                                 )),
                             Text(

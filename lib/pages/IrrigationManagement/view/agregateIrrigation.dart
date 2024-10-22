@@ -1,3 +1,5 @@
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/account.dart';
+import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/model/farmer.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/riceCrop.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/scheduleIrrigation.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/scheduleIrrigationService.dart';
@@ -9,7 +11,9 @@ import 'package:intl/intl.dart';
 class AgregateIrrigation extends StatefulWidget {
   RiceCrop riceCrop;
   Scheduleirrigation? updateIrrigation;
-  AgregateIrrigation(this.riceCrop, this.updateIrrigation, {super.key});
+  Farmer farmer;
+  Account account;
+  AgregateIrrigation(this.riceCrop, this.updateIrrigation, this.farmer, this.account, {super.key});
 
   @override
   _AgregateIrrigationState createState() => _AgregateIrrigationState();
@@ -67,7 +71,11 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
       scheduleirrigation = scheduleirrigation;
 
       if (scheduleirrigation != null) {
-        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => IrrigationView(widget.riceCrop, widget.farmer, widget.account),
+        ));
       }
     });
   }
@@ -156,7 +164,6 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
                           color: Color(0xFF635C5C),
                         ),
                         border: OutlineInputBorder(),
-                        // Otros atributos de decoración que desees agregar
                       ),
                     ),
                   ),
@@ -182,7 +189,6 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
                           color: Color(0xFF635C5C),
                         ),
                         border: OutlineInputBorder(),
-                        // Otros atributos de decoración que desees agregar
                       ),
                     ),
                   ),
@@ -274,7 +280,7 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
                           ),
                         ),
                         child: Text(
-                          'Agregar',
+                          widget.updateIrrigation != null ? 'Update' : 'Save' ,
                           style: GoogleFonts.poppins(
                             fontSize: 20,
                             color: Colors.white,

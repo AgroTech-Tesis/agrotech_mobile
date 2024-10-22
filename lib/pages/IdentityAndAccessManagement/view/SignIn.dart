@@ -164,7 +164,6 @@ class _SignInState extends State<SignIn> {
                     color: Color(0xFF635C5C),
                   ),
                   border: OutlineInputBorder(),
-                  // Otros atributos de decoración que desees agregar
                 ),
               ),
             ),
@@ -182,7 +181,6 @@ class _SignInState extends State<SignIn> {
                     color: Color(0xFF635C5C),
                   ),
                   border: OutlineInputBorder(),
-                  // Otros atributos de decoración que desees agregar
                 ),
               ),
             ),

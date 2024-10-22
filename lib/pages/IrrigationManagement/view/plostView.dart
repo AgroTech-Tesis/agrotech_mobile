@@ -269,7 +269,7 @@ class _PlostViewState extends State<PlostView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Diego Porta Ñaña',
+                        widget.farmer.name!,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           fontSize: 15,
@@ -277,7 +277,7 @@ class _PlostViewState extends State<PlostView> {
                         ),
                       ),
                       Text(
-                        'diegoporta20@gmail.com',
+                        widget.account.emailAddress!,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w500,
                           fontSize: 10,
@@ -380,7 +380,7 @@ class _PlostViewState extends State<PlostView> {
                   )),
             ),
             Container(
-              margin: EdgeInsets.only(left: 15, top: 25, right: 15, bottom: 10),
+              margin: EdgeInsets.only(left: 15, right: 15, bottom: 10),
               width: 262,
               height: 48,
               decoration: BoxDecoration(
