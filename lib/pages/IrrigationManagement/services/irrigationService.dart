@@ -43,7 +43,7 @@ class IrrigationService {
       'Content-Type': 'application/json; charset=UTF-8',
       "Accept": "application/json",
     });
-
+    print(response.body);
     if (response.statusCode == 200) {
       return Irrigation.fromJson(jsonDecode(response.body));
     }

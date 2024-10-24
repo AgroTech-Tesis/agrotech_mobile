@@ -4,10 +4,12 @@ import 'package:agrotech_mobile/pages/IdentityAndAccessManagement/view/SignIn.da
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/irrigation.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/notification.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/model/riceCrop.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/model/waterConsumtion.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/deviceService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/irrigationService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/notificationService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/services/riceCropService.dart';
+import 'package:agrotech_mobile/pages/IrrigationManagement/services/waterPredictionService.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/irrigationView.dart';
 import 'package:agrotech_mobile/pages/IrrigationManagement/view/plostView.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -35,17 +37,21 @@ class _PrincipalviewState extends State<Principalview> {
   Deviceservice? deviceservice;
   int daysPreviousIrrigation = 0;
   NotificationEntity? notification;
+  WaterConsumption? waterConsumption;
+  WaterPredictionService? waterPredictionService;
   NotificationService? notificationService;
   TextEditingController nameNewRiceCrop = TextEditingController();
   late Future<WeatherForecast> futureWeather;
+  OverlayEntry? _overlayEntry;
   @override
   void initState() {
     ricecropservice = Ricecropservice();
     notificationService = NotificationService();
     irrigationService = IrrigationService();
     deviceservice = Deviceservice();
+    waterPredictionService = WaterPredictionService();
     getRiceCropById(widget.farmer.id!);
-
+    getWaterPrediction();
     futureWeather = WeatherForecastService().getWeatherData('catacaos');
 
     super.initState();
@@ -58,6 +64,13 @@ class _PrincipalviewState extends State<Principalview> {
       if (riceCrop != null) {
         getIrrigation(riceCrop!.id!);
       }
+    });
+  }
+  
+  Future getWaterPrediction() async {
+    waterConsumption = await waterPredictionService!.getWaterPrediction();
+    setState(() {
+      waterConsumption = waterConsumption;
     });
   }
   Future deviceIotRiceCrop(int riceCropId) async {
@@ -100,7 +113,7 @@ class _PrincipalviewState extends State<Principalview> {
       title: title,
       body: body,
     );
-    notification = await notificationService!.createIrrigation(notification!);
+    notification = await notificationService!.createNotification(notification!);
     setState(() {
       notification = notification;
       print(notification);
@@ -138,6 +151,37 @@ class _PrincipalviewState extends State<Principalview> {
     });
   }
 
+  void _showBalloon(BuildContext context) {
+    final overlay = Overlay.of(context);
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 430,
+        left: MediaQuery.of(context).size.width / 2 - 160, // Posiciona el globo
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.blueGrey,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              'This number indicates the daily water consumption forecast',
+              style: TextStyle(color: Colors.white, fontSize: 11),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay?.insert(_overlayEntry!);
+
+    // Desaparece el globo después de 2 segundos
+    Future.delayed(Duration(seconds: 2), () {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    });
+  }
   Future getIrrigation(int riceCropId) async {
     irrigations = await irrigationService!.getIrrigations(riceCropId);
     setState(() {
@@ -513,7 +557,10 @@ class _PrincipalviewState extends State<Principalview> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("water prediction",
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("water prediction",
                               style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                   fontSize: 17,
@@ -521,7 +568,23 @@ class _PrincipalviewState extends State<Principalview> {
                                   color: Colors.black87,
                                 ),
                               )),
-                          Text("4.917 L",
+                              Container(
+                                padding: EdgeInsets.only(right: 25),
+                                child: CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: Colors.white,
+                                  child: IconButton(
+                                    icon: Icon(Icons.question_answer_outlined),
+                                    color: Color(0xFF90A5B4),
+                                    onPressed: () {
+                                      _showBalloon(context); // Muestra el globo personalizado
+                                    },
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          Text(waterConsumption != null ? waterConsumption!.waterConsumtion.toString() : "0",
                               style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                   fontSize: 20,

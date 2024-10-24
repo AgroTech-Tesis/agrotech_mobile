@@ -114,6 +114,66 @@ class _PlostViewState extends State<PlostView> {
                   int imageIndex = index % 4;
                   return MaterialButton(
                     onPressed: () {
+                      sensorDataRecords!.isEmpty || sensorDataRecords == null ? 
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white, // Fondo blanco
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(20.0)), // Bordes redondeados
+                            ),
+                            content: Container(
+                              padding: EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image.asset(
+                                    'assets/triste.png',
+                                    height: 70,
+                                  ),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    "The data is not available at this time",
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins', // Fuente Poppins
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 24),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12, horizontal: 24),
+                                      child: Text(
+                                        'OK',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ) :
                       showDialog(
                         context: context,
                         barrierDismissible:

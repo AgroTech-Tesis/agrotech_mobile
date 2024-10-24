@@ -8,7 +8,7 @@ class NotificationService {
   NotificationService();
   String urlService = "${localhost}notifications";
 
-  Future<NotificationEntity?> createIrrigation(NotificationEntity irrigation) async {
+  Future<NotificationEntity?> createNotification(NotificationEntity irrigation) async {
     var uri = Uri.parse(urlService);
     final response = await http.post(uri, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
