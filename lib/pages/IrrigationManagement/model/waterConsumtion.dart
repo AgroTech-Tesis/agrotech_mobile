@@ -8,7 +8,7 @@ String sensorDataRecordToJson(List<WaterConsumption> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class WaterConsumption {
-  double? waterConsumtion;
+  String? waterConsumtion;
 
   WaterConsumption({
     this.waterConsumtion,

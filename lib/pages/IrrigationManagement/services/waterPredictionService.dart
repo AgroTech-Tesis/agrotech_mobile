@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 
 class WaterPredictionService {
   WaterPredictionService();
-  String urlService = "https://water-consumption-forecast-api.onrender.com/daily-forecasts";
+  String urlService =
+      "https://water-consumption-forecast-api.onrender.com/daily-forecasts";
 
   Future<WaterConsumption?> getWaterPrediction() async {
     var uri = Uri.parse(urlService);

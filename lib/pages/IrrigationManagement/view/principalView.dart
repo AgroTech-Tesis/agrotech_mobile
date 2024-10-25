@@ -41,6 +41,7 @@ class _PrincipalviewState extends State<Principalview> {
   WaterPredictionService? waterPredictionService;
   NotificationService? notificationService;
   TextEditingController nameNewRiceCrop = TextEditingController();
+  double? waterPrediction = 0;
   late Future<WeatherForecast> futureWeather;
   OverlayEntry? _overlayEntry;
   @override
@@ -66,13 +67,18 @@ class _PrincipalviewState extends State<Principalview> {
       }
     });
   }
-  
+
   Future getWaterPrediction() async {
     waterConsumption = await waterPredictionService!.getWaterPrediction();
     setState(() {
       waterConsumption = waterConsumption;
+      if (waterConsumption != null) {
+        waterPrediction = double.parse(waterConsumption!.waterConsumtion!);
+        waterConsumption!.waterConsumtion = waterPrediction!.toStringAsFixed(2);
+      }
     });
   }
+
   Future deviceIotRiceCrop(int riceCropId) async {
     var response = await deviceservice!.deviceIotRiceCrop(riceCropId);
     if (response != null) {
@@ -182,6 +188,7 @@ class _PrincipalviewState extends State<Principalview> {
       _overlayEntry = null;
     });
   }
+
   Future getIrrigation(int riceCropId) async {
     irrigations = await irrigationService!.getIrrigations(riceCropId);
     setState(() {
@@ -220,8 +227,7 @@ class _PrincipalviewState extends State<Principalview> {
   void _showDialog() {
     showDialog(
       context: context,
-      barrierDismissible:
-          true,
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -376,8 +382,10 @@ class _PrincipalviewState extends State<Principalview> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(top: 15, bottom: 15, left: 10, right: 10),
-                    margin: EdgeInsets.only(left: 25, right: 25, top: 25, bottom: 15),
+                    padding: EdgeInsets.only(
+                        top: 15, bottom: 15, left: 10, right: 10),
+                    margin: EdgeInsets.only(
+                        left: 25, right: 25, top: 25, bottom: 15),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(14),
@@ -411,7 +419,8 @@ class _PrincipalviewState extends State<Principalview> {
                             FutureBuilder<WeatherForecast>(
                               future: futureWeather,
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
                                   return CircularProgressIndicator();
                                 } else if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
@@ -420,7 +429,8 @@ class _PrincipalviewState extends State<Principalview> {
                                   return Row(
                                     children: [
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             '${weather.tempCelcius}°C',
@@ -436,7 +446,7 @@ class _PrincipalviewState extends State<Principalview> {
                                       ),
                                       SizedBox(width: 20),
                                       Image.asset(
-                                        weather.getWeatherIcon(), 
+                                        weather.getWeatherIcon(),
                                         width: 110,
                                         height: 110,
                                       ),
@@ -561,13 +571,13 @@ class _PrincipalviewState extends State<Principalview> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("water prediction",
-                              style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black87,
-                                ),
-                              )),
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black87,
+                                    ),
+                                  )),
                               Container(
                                 padding: EdgeInsets.only(right: 25),
                                 child: CircleAvatar(
@@ -577,14 +587,20 @@ class _PrincipalviewState extends State<Principalview> {
                                     icon: Icon(Icons.info_outline),
                                     color: Color(0xFF90A5B4),
                                     onPressed: () {
-                                      _showBalloon(context); // Muestra el globo personalizado
+                                      _showBalloon(
+                                          context); // Muestra el globo personalizado
                                     },
                                   ),
                                 ),
                               )
                             ],
                           ),
-                          Text(waterConsumption != null ? waterConsumption!.waterConsumtion.toString() + " L" : "0 L",
+                          Text(
+                              waterConsumption != null
+                                  ? waterConsumption!.waterConsumtion
+                                          .toString() +
+                                      " L"
+                                  : "0 L",
                               style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                   fontSize: 20,
