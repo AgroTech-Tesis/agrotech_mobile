@@ -574,7 +574,7 @@ class _PrincipalviewState extends State<Principalview> {
                                   radius: 20,
                                   backgroundColor: Colors.white,
                                   child: IconButton(
-                                    icon: Icon(Icons.question_answer_outlined),
+                                    icon: Icon(Icons.info_outline),
                                     color: Color(0xFF90A5B4),
                                     onPressed: () {
                                       _showBalloon(context); // Muestra el globo personalizado
@@ -584,7 +584,7 @@ class _PrincipalviewState extends State<Principalview> {
                               )
                             ],
                           ),
-                          Text(waterConsumption != null ? waterConsumption!.waterConsumtion.toString() : "0",
+                          Text(waterConsumption != null ? waterConsumption!.waterConsumtion.toString() + " L" : "0 L",
                               style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                   fontSize: 20,

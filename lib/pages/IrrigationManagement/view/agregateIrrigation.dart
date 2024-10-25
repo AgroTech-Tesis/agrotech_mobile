@@ -145,7 +145,7 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
                   Container(
                     padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
                     child: Text(
-                      'Nombre del riego',
+                      'Irrigation Name',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -170,7 +170,7 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
                   Container(
                     padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
                     child: Text(
-                      'Duración',
+                      'Time (minutes)',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -195,7 +195,7 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
                   Container(
                     padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
                     child: Text(
-                      'Fecha del Riego',
+                      'Irrigation Date',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -225,7 +225,7 @@ class _AgregateIrrigationState extends State<AgregateIrrigation> {
                   Container(
                     padding: EdgeInsets.fromLTRB(0, 12, 0, 6),
                     child: Text(
-                      'Hora del Riego',
+                      'Irrigation Hour',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

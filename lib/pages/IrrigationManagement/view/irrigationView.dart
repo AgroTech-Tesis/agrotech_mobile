@@ -150,7 +150,7 @@ class _IrrigationViewState extends State<IrrigationView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'SCHEDULE IRRIGATION',
+                          'IRRIGATION SCHEDULE',
                           style: GoogleFonts.poppins(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
@@ -264,7 +264,7 @@ class _IrrigationViewState extends State<IrrigationView> {
                                 ),
                               ),
                               Text(
-                                'Duración: ${irrigations![index].irrigationTime}',
+                                'Time: ${irrigations![index].irrigationTime} min',
                                 style: TextStyle(
                                   fontFamily: 'Droid Sans',
                                   fontWeight: FontWeight.w400,
@@ -281,7 +281,7 @@ class _IrrigationViewState extends State<IrrigationView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Fecha: ${DateFormat('dd/MM/yy \'at\' HH:mm').format(DateTime.parse(irrigations![index].irrigationDate!))}',
+                                'Date: ${DateFormat('dd/MM/yy \'at\' HH:mm').format(DateTime.parse(irrigations![index].irrigationDate!))}',
                                 style: TextStyle(
                                   fontFamily: 'Droid Sans',
                                   fontWeight: FontWeight.w400,
